@@ -20,5 +20,8 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  images: {
+    domains: ["avatars.githubusercontent.com", "daisyui.com", "res.cloudinary.com"],
+  }
 };
 export default config;

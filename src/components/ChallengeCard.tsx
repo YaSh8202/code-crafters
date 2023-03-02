@@ -9,7 +9,7 @@ type Props = {
 
 function ChallengeCard({ title, description, image }: Props) {
   return (
-    <div className="card w-96 bg-base-100 shadow-xl">
+    <div className="card max-w-[24rem] bg-base-100 shadow-xl justify-self-center ">
       <figure>
         <Image src={image} alt={`${title}-image`} width={384} height={256} />
       </figure>

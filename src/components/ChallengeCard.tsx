@@ -1,24 +1,52 @@
+import { type Difficulty, type ChallengeType } from "@prisma/client";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 type Props = {
   title: string;
   description: string;
-  image: string;
+  image?: string;
+  type: ChallengeType;
+  slug: string;
+  difficulty: Difficulty;
 };
 
-function ChallengeCard({ title, description, image }: Props) {
+function ChallengeCard({
+  slug,
+  title,
+  description,
+  image,
+  type,
+  difficulty,
+}: Props) {
   return (
-    <div className="card max-w-[24rem] bg-base-100 shadow-xl justify-self-center ">
+    <div className="card max-w-[24rem] justify-self-center border bg-base-100  ">
       <figure>
-        <Image src={image} alt={`${title}-image`} width={384} height={256} />
+        <Link href={`/challenges/${slug}`}>
+          <Image
+            src={image ?? ""}
+            alt={`${title}-image`}
+            width={384}
+            height={256}
+            className="transition-all duration-300 hover:scale-105"
+          />
+        </Link>
       </figure>
       <div className="card-body">
-        <h2 className="card-title text-2xl  ">{title}</h2>
+        <Link
+          href={`/challenges/${slug}`}
+          className="card-title text-2xl hover:link  "
+        >
+          {title}
+        </Link>
+        <div className="flex items-center justify-between">
+          <span className="font-semibold uppercase text-accent">{type}</span>
+          <span className="font-semibold uppercase text-accent">
+            {difficulty}
+          </span>
+        </div>
         <p>{description}</p>
-        {/* <div className="card-actions justify-end">
-          <button className="btn-primary btn">Buy Now</button>
-        </div> */}
       </div>
     </div>
   );

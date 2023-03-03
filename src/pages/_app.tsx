@@ -13,7 +13,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <div className=" container mx-auto px-8 ">
+      <div className=" mx-auto w-[min(100%-2rem,1400px)] ">
         <Navbar />
         <Component {...pageProps} />
       </div>

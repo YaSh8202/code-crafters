@@ -1,3 +1,4 @@
+import { ChallengeType, Difficulty } from "@prisma/client";
 import { z } from "zod";
 
 import {
@@ -6,12 +7,65 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 
-export const exampleRouter = createTRPCRouter({
+export const challengeRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.example.findMany();
+    return ctx.prisma.challenge.findMany({
+      select: {
+        id: true,
+        title: true,
+        type: true,
+        shortDesc: true,
+        imagesURL: true,
+        difficulty: true,
+        slug: true,
+      },
+    });
   }),
 
-  // getSecretMessage: protectedProcedure.query(() => {
-  //   return "you can now see this secret message!";
-  // }),
+  create: protectedProcedure
+    .input(
+      z.object({
+        title: z.string(),
+        type: z.nativeEnum(ChallengeType),
+        difficulty: z.nativeEnum(Difficulty),
+        shortDesc: z.string(),
+        briefDesc: z.string(),
+        imagesURL: z.array(z.string()),
+        videoURL: z.string(),
+        slug: z.string(),
+      })
+    )
+    .mutation(({ input, ctx }) => {
+      return ctx.prisma.challenge.create({
+        data: {
+          title: input.title,
+          type: input.type,
+          shortDesc: input.shortDesc,
+          briefDesc: input.briefDesc,
+          imagesURL: input.imagesURL,
+          videoURL: input.videoURL,
+          userId: ctx.session.user.id,
+          difficulty: input.difficulty,
+          slug: input.slug,
+        },
+      });
+    }),
+
+  getAllByUser: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.challenge.findMany({
+      where: {
+        userId: ctx.session.user.id,
+      },
+    });
+  }),
+
+  getById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(({ input, ctx }) => {
+      return ctx.prisma.challenge.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
 });

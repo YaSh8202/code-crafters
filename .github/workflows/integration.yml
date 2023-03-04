@@ -1,13 +1,6 @@
 name: CI
 on: [push]
 
-env:
-  DATABASE_URL: ${{ secrets.DATABASE_URL }}
-  NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-  NEXT_GITHUB_CLIENT_ID: ${{ secrets.NEXT_GITHUB_CLIENT_ID }}
-  NEXT_GITHUB_CLIENT_SECRET: ${{ secrets.NEXT_GITHUB_CLIENT_SECRET }}
-  NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
-
 jobs:
   build-project:
     name: Build project
@@ -17,6 +10,16 @@ jobs:
         uses: actions/checkout@v3
       - name: Install NPM dependencies
         run: npm install
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXT_GITHUB_CLIENT_ID: ${{ secrets.NEXT_GITHUB_CLIENT_ID }}
+          NEXT_GITHUB_CLIENT_SECRET: ${{ secrets.NEXT_GITHUB_CLIENT_SECRET }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+      - name: "Log next auth url"
+        run: echo "$NEXTAUTH_URL"
+        env:
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
       - name: Generate Prisma
         run: npm run postinstall
       - name: Build project assets

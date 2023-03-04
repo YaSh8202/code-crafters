@@ -6,7 +6,7 @@ import { type SVGProps } from "react";
 function Navbar() {
   const { data: session } = useSession();
   return (
-    <div className="navbar bg-base-100">
+    <div className="navbar ">
       <div className="flex-1">
         <Link href="/" className="btn-ghost btn text-xl normal-case">
           Code Crafters
@@ -20,7 +20,7 @@ function Navbar() {
             </Link>
           </li>
           <li>
-            <Link href="/add-challenge" className="">
+            <Link href="/new-challenge" className="">
               Add Challenge
             </Link>
           </li>

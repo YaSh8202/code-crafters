@@ -68,4 +68,14 @@ export const challengeRouter = createTRPCRouter({
         },
       });
     }),
+
+  getBySlug: publicProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(({ input, ctx }) => {
+      return ctx.prisma.challenge.findUnique({
+        where: {
+          slug: input.slug,
+        },
+      });
+    }),
 });

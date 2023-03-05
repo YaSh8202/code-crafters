@@ -4,7 +4,7 @@ export default function Document() {
   return (
     <Html data-theme="winter">
       <Head />
-      <body className="bg-gray-50 min-h-screen" >
+      <body className="bg-gray-50 " >
         <Main />
         <NextScript />
       </body>

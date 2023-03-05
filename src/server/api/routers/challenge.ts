@@ -31,11 +31,11 @@ export const challengeRouter = createTRPCRouter({
         shortDesc: z.string(),
         briefDesc: z.string(),
         imagesURL: z.array(z.string()),
-        videoURL: z.string(),
-        slug: z.string(),
+        videoURL: z.optional(z.string()),
       })
     )
     .mutation(({ input, ctx }) => {
+      const slug = input.title.toLowerCase().replace(/ /g, "-");
       return ctx.prisma.challenge.create({
         data: {
           title: input.title,
@@ -46,7 +46,7 @@ export const challengeRouter = createTRPCRouter({
           videoURL: input.videoURL,
           userId: ctx.session.user.id,
           difficulty: input.difficulty,
-          slug: input.slug,
+          slug: slug,
         },
       });
     }),

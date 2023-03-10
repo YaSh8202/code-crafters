@@ -10,7 +10,7 @@ const NewChallengePage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <h1>Create a new Challenge</h1>
+        <h1>Profile page</h1>
       </main>
     </>
   );

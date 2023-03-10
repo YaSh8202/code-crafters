@@ -1,12 +1,10 @@
 // import { type InferGetStaticPropsType, type GetStaticPropsContext } from "next";
 // import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import Head from "next/head";
-// import { prisma } from "~/server/db";
 import { api } from "~/utils/api";
-// import { appRouter } from "~/server/api/root";
-// import superjson from "superjson";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 const ChallengePage = () =>
   // props: InferGetStaticPropsType<typeof getStaticProps>
@@ -16,7 +14,7 @@ const ChallengePage = () =>
       slug: slug as string,
     });
 
-    if (!challenge) return <div>Challenge not found</div>;
+    if (!challenge || !slug) return <div>Challenge not found</div>;
 
     return (
       <>
@@ -37,9 +35,9 @@ const ChallengePage = () =>
                 </div>
                 <h2 className="text-3xl font-semibold">{challenge.title}</h2>
                 <p>{challenge.shortDesc}</p>
-                <button className="btn-primary btn w-48 ">
+                <Link href={`/challenges/${slug as string}/solutions/new`} className="btn-primary btn w-48 ">
                   Start Challenge
-                </button>
+                </Link>
               </div>
               <div className=" carousel w-full flex-1">
                 {challenge.imagesURL.map((imgSrc, i) => (

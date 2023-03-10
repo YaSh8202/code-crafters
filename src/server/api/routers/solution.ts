@@ -6,7 +6,7 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 
-export const submissionRouter = createTRPCRouter({
+export const SolutionRouter = createTRPCRouter({
   getAllByUser: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.submission.findMany({
       where: {

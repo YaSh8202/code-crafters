@@ -111,9 +111,6 @@ const NewChallengePage: NextPage = () => {
                 </option>
               ))}
             </select>
-            <label className="label">
-              <span className="label-text-alt">Bottom Left label</span>
-            </label>
           </div>
           <div className="flex flex-col space-x-2">
             <label className="label">

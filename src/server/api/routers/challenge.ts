@@ -35,7 +35,8 @@ export const challengeRouter = createTRPCRouter({
       })
     )
     .mutation(({ input, ctx }) => {
-      const slug = input.title.toLowerCase().replace(/ /g, "-") + "-" + generateUID();
+      const slug =
+        input.title.toLowerCase().replace(/ /g, "-") + "-" + generateUID();
       return ctx.prisma.challenge.create({
         data: {
           title: input.title,
@@ -75,6 +76,19 @@ export const challengeRouter = createTRPCRouter({
       return ctx.prisma.challenge.findUnique({
         where: {
           slug: input.slug,
+        },
+      });
+    }),
+
+  getChallengeIdBySlug: publicProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(({ input, ctx }) => {
+      return ctx.prisma.challenge.findUnique({
+        where: {
+          slug: input.slug,
+        },
+        select: {
+          id: true,
         },
       });
     }),

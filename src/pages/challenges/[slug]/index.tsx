@@ -40,7 +40,7 @@ const ChallengePage = () =>
                 </Link>
               </div>
               <div className=" carousel w-full flex-1">
-                {challenge.imagesURL.map((imgSrc, i) => (
+                {challenge.imagesURL?.map((imgSrc, i) => (
                   <div
                     key={i}
                     id={`item${i}`}

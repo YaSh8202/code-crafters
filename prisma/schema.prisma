@@ -5,17 +5,17 @@ generator client {
     provider = "prisma-client-js"
 }
 
-generator dbml {
-    provider            = "prisma-dbml-generator"
-    output              = "../dbml"
-    outputName          = "code-crafters.dbml"
-    projectName         = "Code Crafters"
-    projectDatabaseType = "PostgreSQL"
-    projectNote         = "Test project description"
-}
-generator erd {
-    provider = "prisma-erd-generator"
-}
+// generator dbml {
+//     provider            = "prisma-dbml-generator"
+//     output              = "../dbml"
+//     outputName          = "code-crafters.dbml"
+//     projectName         = "Code Crafters"
+//     projectDatabaseType = "PostgreSQL"
+//     projectNote         = "Test project description"
+// }
+// generator erd {
+//     provider = "prisma-erd-generator"
+// }
 
 datasource db {
     provider = "postgresql"

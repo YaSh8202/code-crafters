@@ -21,7 +21,7 @@ const config = {
     defaultLocale: "en",
   },
   images: {
-    domains: ["avatars.githubusercontent.com", "upcdn.io", "res.cloudinary.com"],
+    domains: ["avatars.githubusercontent.com", "upcdn.io", "res.cloudinary.com", "firebasestorage.googleapis.com"],
   }
 };
 export default config;

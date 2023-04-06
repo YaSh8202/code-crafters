@@ -29,7 +29,7 @@ function ChallengeCard({
             alt={`${title}-image`}
             width={384}
             height={256}
-            className="transition-all duration-300 hover:scale-105"
+            className="transition-all duration-300 hover:scale-105 h-[256px] object-cover"
           />
         </Link>
       </figure>

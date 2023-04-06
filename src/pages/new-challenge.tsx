@@ -1,12 +1,17 @@
 import { ChallengeType, Difficulty } from "@prisma/client";
 import { type NextPage } from "next";
 import Head from "next/head";
-import { Uploader, type UploadWidgetConfig } from "uploader";
-import { UploadDropzone, UploadButton } from "react-uploader";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { useState } from "react";
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
+import {
+  type FileWithPath,
+  useDropzone,
+  type DropzoneRootProps,
+  type DropzoneInputProps,
+} from "react-dropzone";
+import { type UploadApiResponse } from "cloudinary";
+import { useEffect, useState } from "react";
 
 type FormValues = {
   title: string;
@@ -21,27 +26,73 @@ const NewChallengePage: NextPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormValues>();
-  const [images, setImages] = useState<string[]>([]);
+  const {
+    acceptedFiles: acceptedImageFiles,
+    getRootProps: getImageRootProps,
+    getInputProps: getImageInputProps,
+  } = useDropzone({
+    multiple: true,
+    accept: {
+      "image/jpeg": [".jpg", ".jpeg"],
+      "image/png": [".png"],
+      "image/webp": [".webp"],
+    },
+  });
+  const {
+    acceptedFiles: acceptedVideoFiles,
+    getRootProps: getVideoRootProps,
+    getInputProps: getVideoInputProps,
+  } = useDropzone({
+    accept: {
+      "video/mp4": [".mp4"],
+      "video/mkv": [".mkv"],
+    },
+    multiple: false,
+    maxSize: 10000000, // 10MB
+  });
+  const [showImageError, setShowImageError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const createChallenge = api.challenge.create.useMutation({
     onSuccess: () => {
+      setLoading(false);
       void router.push("/challenges");
     },
+    onError: () => {
+      setLoading(false);
+    },
   });
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    if (images.length === 0) return alert("Please upload at least one image");
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
     if (!data.title || !data.type || !data.difficulty || !data.description) {
       return alert("Please fill all the fields");
     }
+    if (acceptedImageFiles.length === 0) {
+      setShowImageError(true);
+      return;
+    }
+    setLoading(true);
+    const urls = (await Promise.all([
+      await uploadToCloudinary(acceptedImageFiles),
+      await uploadToCloudinary(acceptedVideoFiles, true),
+    ])) as [string[], string[]];
+
     createChallenge.mutate({
       shortDesc: "shortDesc",
       difficulty: data.difficulty,
-      imagesURL: images,
+      imagesURL: urls[0],
       briefDesc: data.description,
       title: data.title,
       type: data.type,
+      videoURL: urls[1].length ? urls[1][0] : undefined,
     });
   };
+
+  useEffect(() => {
+    if (acceptedImageFiles.length > 0) {
+      setShowImageError(false);
+    }
+  }, [acceptedImageFiles]);
+
   return (
     <>
       <Head>
@@ -113,20 +164,20 @@ const NewChallengePage: NextPage = () => {
             </select>
           </div>
           <div className="flex flex-col space-x-2">
-            <label className="label">
-              <span className="label-text text-base font-medium">
+            <label className="label justify-start space-x-2">
+              <span className=" label-text text-base font-medium">
                 Challenge Images *
               </span>
+              {showImageError && (
+                <span className="label-text-alt text-red-400">
+                  Please upload at least one image
+                </span>
+              )}
             </label>
-            <UploadDropzone
-              uploader={uploader}
-              options={uploaderOptions}
-              onUpdate={(files) =>
-                console.log(files.map((x) => x.fileUrl).join("\n"))
-              }
-              onComplete={(files) => setImages(files.map((x) => x.fileUrl))}
-              width="700px"
-              height="200px"
+            <DropZoneInput
+              acceptedFiles={acceptedImageFiles}
+              getInputProps={getImageInputProps}
+              getRootProps={getImageRootProps}
             />
           </div>
           <div className="flex flex-col space-x-2">
@@ -135,19 +186,11 @@ const NewChallengePage: NextPage = () => {
                 Challenge Videos (optional)
               </span>
             </label>
-            <UploadButton
-              uploader={uploader}
-              options={{ multi: false, maxFileSizeBytes: /* 10MB */ 10485760 }}
-              onComplete={(files) =>
-                alert(files.map((x) => x.fileUrl).join("\n"))
-              }
-            >
-              {({ onClick }) => (
-                <button className="btn-ghost btn " onClick={onClick}>
-                  Click here to upload Challenge Video
-                </button>
-              )}
-            </UploadButton>
+            <DropZoneInput
+              acceptedFiles={acceptedVideoFiles}
+              getInputProps={getVideoInputProps}
+              getRootProps={getVideoRootProps}
+            />
           </div>
           <div className="flex flex-col space-x-2">
             <label className="label">
@@ -172,10 +215,17 @@ const NewChallengePage: NextPage = () => {
           </div>
           <button
             type="submit"
-            className="btn-primary btn mt-5
-          "
+            className="btn-primary btn mt-5"
+            disabled={loading}
           >
-            Submit
+            {loading && (
+              <span
+                className="mr-1 inline-block h-4 w-4 animate-spin rounded-full border-[3px] border-current border-t-transparent text-white "
+                role="status"
+                aria-label="loading"
+              ></span>
+            )}
+            {loading ? "Loading" : "Submit"}
           </button>
         </form>
       </main>
@@ -183,29 +233,59 @@ const NewChallengePage: NextPage = () => {
   );
 };
 
-const uploader = Uploader({ apiKey: "public_kW15b5n7D18wopW9BAmHcFSk6Ece" }); // Replace "free" with your API key.
-const uploaderOptions: UploadWidgetConfig = {
-  multi: true,
-
-  // Comment out this line & use 'onUpdate' instead of
-  // 'onComplete' to have the dropzone close after upload.
-  showFinishButton: true,
-  styles: {
-    colors: {
-      primary: "#377dff",
-    },
-  },
-};
-
-// const UploadZone = () => (
-//   <UploadDropzone
-//     uploader={uploader}
-//     options={uploaderOptions}
-//     onUpdate={(files) => console.log(files.map((x) => x.fileUrl).join("\n"))}
-//     onComplete={(files) => alert(files.map((x) => x.fileUrl).join("\n"))}
-//     width="700px"
-//     height="200px"
-//   />
-// );
-
 export default NewChallengePage;
+
+function DropZoneInput({
+  acceptedFiles,
+  getRootProps,
+  getInputProps,
+}: {
+  acceptedFiles: File[];
+  getRootProps: <T extends DropzoneRootProps>(props?: T | undefined) => T;
+  getInputProps: <T extends DropzoneInputProps>(props?: T | undefined) => T;
+}) {
+  const files = acceptedFiles.map((file: FileWithPath) => (
+    <li key={file.path}>
+      {file.path} - {(file.size / 1000).toFixed(1)} KB
+    </li>
+  ));
+
+  return (
+    <section className="container">
+      <div
+        {...getRootProps({
+          className:
+            "flex-1 h-24 justify-center flex flex-col items-center p-5 border-2 rounded-md border-dashed transition duration-150 ease-in-out border-[hsl(214.29_30.061%_31.961%)]/20 text-[hsl(214.29_30.061%_31.961%)]/20 focus:border-blue-400  focus:text-blue-400 cursor-pointer outline-none",
+        })}
+      >
+        <input {...getInputProps()} />
+        <p>Drag n drop some files here, or click to select files</p>
+      </div>
+      <aside>
+        <h4>Files</h4>
+        <ul>{files}</ul>
+      </aside>
+    </section>
+  );
+}
+const uploadToCloudinary = async (acceptedFiles: File[], isVideo?: boolean) => {
+  const uploadedImages = await Promise.all(
+    acceptedFiles.map(async (file: File) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "fpbrzu0b");
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/dpuscktmu/${
+          isVideo ? "video" : "image"
+        }/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const data = (await res.json()) as UploadApiResponse;
+      return data.secure_url;
+    })
+  );
+  return uploadedImages;
+};

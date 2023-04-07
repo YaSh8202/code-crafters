@@ -1,4 +1,4 @@
-import { type NextPage } from "next";
+import type { NextPage, GetStaticProps } from "next";
 import Head from "next/head";
 import { signIn, signOut, useSession } from "next-auth/react";
 
@@ -37,4 +37,14 @@ const AuthShowcase: React.FC = () => {
       </button>
     </div>
   );
+};
+
+export const getStaticProps: GetStaticProps = () => {
+  return {
+    props: {
+    },
+    redirect: {
+      destination: "/challenges",
+    },
+  };
 };

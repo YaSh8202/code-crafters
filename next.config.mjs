@@ -32,6 +32,7 @@ const config = {
   images: {
     domains: ["avatars.githubusercontent.com", "upcdn.io", "res.cloudinary.com", "firebasestorage.googleapis.com"],
   },
+  staticPageGenerationTimeout: 100,
 };
 // export default config;
 const nextConfig = {

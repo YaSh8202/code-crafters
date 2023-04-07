@@ -218,6 +218,7 @@ const NewChallengePage: NextPage = () => {
               preview="edit"
               enableScroll
               extraCommands={[codeEdit, codePreview, codeLive]}
+              
             />
           </div>
           <button

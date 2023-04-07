@@ -1,11 +1,12 @@
-import { type NextPage } from "next";
+import type { NextPage, GetStaticProps } from "next";
 import Head from "next/head";
 import { api } from "~/utils/api";
 import ChallengeCard from "~/components/ChallengeCard";
+import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 
 const ChallengesPage: NextPage = () => {
   const { data: challenges } = api.challenge.getAll.useQuery();
-  
+
   return (
     <>
       <Head>
@@ -30,20 +31,15 @@ const ChallengesPage: NextPage = () => {
   );
 };
 
-// export async function getStaticPaths() {
-  
-//   return {
-//     paths: [{ params: { id: '1' } }, { params: { id: '2' } }],
-//     fallback: false, // can also be true or 'blocking'
-//   }
-// }
+export const getStaticProps: GetStaticProps = async () => {
+  const ssg = generateSSGHelper();
+  await ssg.challenge.getAll.prefetch();
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    },
+  };
+};
 
-// // `getStaticPaths` requires using `getStaticProps`
-// export async function getStaticProps(context) {
-//   return {
-//     // Passed to the page component as props
-//     props: { post: {} },
-//   }
-// }
 
 export default ChallengesPage;

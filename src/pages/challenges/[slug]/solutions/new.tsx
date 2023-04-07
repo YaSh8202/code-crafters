@@ -1,16 +1,23 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { api } from "~/utils/api";
 import Select from "react-select";
+import dynamic from "next/dynamic";
+import "@uiw/react-md-editor/markdown-editor.css";
+import "@uiw/react-markdown-preview/markdown.css";
+import {
+  codeLive,
+  codePreview,
+  codeEdit,
+} from "@uiw/react-md-editor/lib/commands";
 
 type FormValues = {
   title: string;
   repoURL: string;
   liveURL: string;
-  description: string;
 };
 const tagsOptions = [
   "React",
@@ -42,6 +49,10 @@ const tagsOptions = [
   "React Hook Form",
   "Redis",
 ];
+const MDEditor = dynamic(
+  () => import("@uiw/react-md-editor").then((mod) => mod.default),
+  { ssr: false }
+);
 
 const NewSolutionPage: NextPage = () => {
   const {
@@ -49,7 +60,8 @@ const NewSolutionPage: NextPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormValues>();
-  const [tags, setTags] = React.useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
+  const [desc, setDesc] = useState<string>("");
   const router = useRouter();
   const { slug } = router.query;
   const challengeId = api.challenge.getChallengeIdBySlug.useQuery({
@@ -69,7 +81,7 @@ const NewSolutionPage: NextPage = () => {
       repoURL: data.repoURL,
       liveURL: data.liveURL,
       tags: tags,
-      description: data.description,
+      description: desc,
       title: data.title,
       challengeId: challengeId.data?.id,
     });
@@ -184,20 +196,15 @@ const NewSolutionPage: NextPage = () => {
                 Brief Description *
               </span>
             </label>
-            <textarea
-              {...register("description", {
-                required: "Brief Description is required",
-              })}
-              className="textarea-bordered textarea h-24"
-              placeholder="Description"
+            <MDEditor
+              value={desc}
+              onChange={(val) => {
+                setDesc(val || "");
+              }}
+              preview="edit"
+              enableScroll
+              extraCommands={[codeEdit, codePreview, codeLive]}
             />
-            {errors.description?.type === "required" && (
-              <label className="label">
-                <span className="label-text-alt text-red-400">
-                  {errors.description?.message}
-                </span>
-              </label>
-            )}
           </div>
           <button
             type="submit"

@@ -81,7 +81,6 @@ const ChallengePage = (props: { slug: string }) => {
             </div>
           </section>
           <section className=" col-span-2 max-w-full  rounded-xl border bg-white p-6">
-            {/* <ReactMarkdown>{challenge.briefDesc}</ReactMarkdown> */}
             <MDEditor source={challenge.briefDesc} />
           </section>
         </div>

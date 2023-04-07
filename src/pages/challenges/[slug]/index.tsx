@@ -5,6 +5,13 @@ import { api } from "~/utils/api";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+import "@uiw/react-md-editor/markdown-editor.css";
+import "@uiw/react-markdown-preview/markdown.css";
+const MDEditor = dynamic(
+  () => import("@uiw/react-md-editor").then((mod) => mod.default.Markdown),
+  { ssr: false }
+);
 
 const ChallengePage = () =>
   // props: InferGetStaticPropsType<typeof getStaticProps>
@@ -35,7 +42,10 @@ const ChallengePage = () =>
                 </div>
                 <h2 className="text-3xl font-semibold">{challenge.title}</h2>
                 <p>{challenge.shortDesc}</p>
-                <Link href={`/challenges/${slug as string}/solutions/new`} className="btn-primary btn w-48 ">
+                <Link
+                  href={`/challenges/${slug as string}/solutions/new`}
+                  className="btn-primary btn w-48 "
+                >
                   Start Challenge
                 </Link>
               </div>
@@ -48,7 +58,7 @@ const ChallengePage = () =>
                   >
                     <Image
                       src={imgSrc}
-                      className="w-full"
+                      className="w-full object-cover"
                       fill
                       alt={"challengeImage"}
                     />
@@ -72,9 +82,9 @@ const ChallengePage = () =>
                 ))}
               </div>
             </section>
-            <section className="col-span-2  rounded-xl border bg-white p-6">
-              <h4 className="text-2xl font-bold">Brief</h4>
-              <p>{challenge.briefDesc}</p>
+            <section className=" max-w-full col-span-2  rounded-xl border bg-white p-6">
+              {/* <ReactMarkdown>{challenge.briefDesc}</ReactMarkdown> */}
+              <MDEditor source={challenge.briefDesc} />
             </section>
           </div>
         </main>

@@ -4,7 +4,16 @@
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
  * This is especially useful for Docker builds.
  */
+import removeImports from 'next-remove-imports'
+
 !process.env.SKIP_ENV_VALIDATION && (await import("./src/env.mjs"));
+
+
+/** @type {function(import("next").NextConfig): import("next").NextConfig}} */
+const removeImportsFun = removeImports({
+  // test: /node_modules([\s\S]*?)\.(tsx|ts|js|mjs|jsx)$/,
+  // matchImports: "\\.(less|css|scss|sass|styl)$"
+});
 
 /** @type {import("next").NextConfig} */
 const config = {
@@ -22,6 +31,16 @@ const config = {
   },
   images: {
     domains: ["avatars.githubusercontent.com", "upcdn.io", "res.cloudinary.com", "firebasestorage.googleapis.com"],
-  }
+  },
 };
-export default config;
+// export default config;
+const nextConfig = {
+  ...removeImportsFun({
+    webpack(config,) {
+      return config
+    },
+  }),
+  ...config,
+};
+
+export default nextConfig;

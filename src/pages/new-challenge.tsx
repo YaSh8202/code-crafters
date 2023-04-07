@@ -12,12 +12,23 @@ import {
 } from "react-dropzone";
 import { type UploadApiResponse } from "cloudinary";
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+import "@uiw/react-md-editor/markdown-editor.css";
+import "@uiw/react-markdown-preview/markdown.css";
+import {
+  codeLive,
+  codePreview,
+  codeEdit,
+} from "@uiw/react-md-editor/lib/commands";
+const MDEditor = dynamic(
+  () => import("@uiw/react-md-editor").then((mod) => mod.default),
+  { ssr: false }
+);
 
 type FormValues = {
   title: string;
   type: ChallengeType;
   difficulty: Difficulty;
-  description: string;
 };
 
 const NewChallengePage: NextPage = () => {
@@ -50,6 +61,7 @@ const NewChallengePage: NextPage = () => {
     multiple: false,
     maxSize: 10000000, // 10MB
   });
+  const [desc, setDesc] = useState<string>("");
   const [showImageError, setShowImageError] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -63,7 +75,7 @@ const NewChallengePage: NextPage = () => {
     },
   });
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    if (!data.title || !data.type || !data.difficulty || !data.description) {
+    if (!data.title || !data.type || !data.difficulty) {
       return alert("Please fill all the fields");
     }
     if (acceptedImageFiles.length === 0) {
@@ -80,7 +92,7 @@ const NewChallengePage: NextPage = () => {
       shortDesc: "shortDesc",
       difficulty: data.difficulty,
       imagesURL: urls[0],
-      briefDesc: data.description,
+      briefDesc: desc,
       title: data.title,
       type: data.type,
       videoURL: urls[1].length ? urls[1][0] : undefined,
@@ -198,20 +210,15 @@ const NewChallengePage: NextPage = () => {
                 Brief Description *
               </span>
             </label>
-            <textarea
-              {...register("description", {
-                required: "Brief Description is required",
-              })}
-              className="textarea-bordered textarea h-24"
-              placeholder="Description"
+            <MDEditor
+              value={desc}
+              onChange={(val) => {
+                setDesc(val || "");
+              }}
+              preview="edit"
+              enableScroll
+              extraCommands={[codeEdit, codePreview, codeLive]}
             />
-            {errors.description?.type === "required" && (
-              <label className="label">
-                <span className="label-text-alt text-red-400">
-                  {errors.description?.message}
-                </span>
-              </label>
-            )}
           </div>
           <button
             type="submit"
@@ -255,7 +262,7 @@ function DropZoneInput({
       <div
         {...getRootProps({
           className:
-            "flex-1 h-24 justify-center flex flex-col items-center p-5 border-2 rounded-md border-dashed transition duration-150 ease-in-out border-[hsl(214.29_30.061%_31.961%)]/20 text-[hsl(214.29_30.061%_31.961%)]/20 focus:border-blue-400  focus:text-blue-400 cursor-pointer outline-none",
+            "flex-1 h-24 justify-center flex flex-col items-center p-5 border-2 rounded-md border-dashed transition duration-150 ease-in-out border-[hsl(214.29_30.061%_31.961%)]/20 text-gray-400 focus:border-blue-400  focus:text-blue-400 cursor-pointer outline-none",
         })}
       >
         <input {...getInputProps()} />

@@ -14,7 +14,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <SessionProvider session={session}>
       <div className="mx-auto flex min-h-screen w-[min(100%-2rem,1400px)] flex-col ">
         <Navbar />
-        <div className="flex-1">
+        <div className="flex-1 mb-6">
           <Component {...pageProps} />
         </div>
         <Footer />

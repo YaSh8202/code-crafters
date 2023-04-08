@@ -5,21 +5,31 @@ import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import Navbar from "~/components/Navbar";
 import Footer from "~/components/Footer";
+import PageHeader from "~/components/PageHeader";
+import { Barlow } from "next/font/google";
+
+const barlow = Barlow({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+});
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
   return (
-    <SessionProvider session={session}>
-      <div className="mx-auto flex min-h-screen w-[min(100%-2rem,1400px)] flex-col ">
+    <main className={barlow.className}>
+      <SessionProvider session={session}>
         <Navbar />
-        <div className="flex-1 mb-6">
-          <Component {...pageProps} />
+        <PageHeader />
+        <div className="mx-auto flex min-h-screen w-[min(100%-2rem,1400px)] flex-col ">
+          <div className="my-6 flex-1">
+            <Component {...pageProps} />
+          </div>
+          <Footer />
         </div>
-        <Footer />
-      </div>
-    </SessionProvider>
+      </SessionProvider>
+    </main>
   );
 };
 

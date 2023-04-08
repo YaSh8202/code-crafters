@@ -1,6 +1,7 @@
 import { createTRPCRouter } from "~/server/api/trpc";
 import { challengeRouter } from "./routers/challenge";
 import { SolutionRouter } from "./routers/solution";
+import { userRouter } from "./routers/user";
 
 /**
  * This is the primary router for your server.
@@ -10,6 +11,7 @@ import { SolutionRouter } from "./routers/solution";
 export const appRouter = createTRPCRouter({
   challenge: challengeRouter,
   solution: SolutionRouter,
+  user: userRouter,
 });
 
 // export type definition of API

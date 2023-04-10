@@ -5,6 +5,7 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "~/server/api/trpc";
+import { getScreenshot } from "~/server/helpers/cloudinaryHelper";
 
 export const SolutionRouter = createTRPCRouter({
   getAllByUser: protectedProcedure.query(({ ctx }) => {
@@ -36,7 +37,16 @@ export const SolutionRouter = createTRPCRouter({
         tags: z.array(z.string()),
       })
     )
-    .mutation(({ input, ctx }) => {
+    .mutation(async ({ input, ctx }) => {
+      let image = undefined;
+      if (input.liveURL) {
+        try {
+          image = await getScreenshot(input.liveURL);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      console.log(image);
       return ctx.prisma.solution.create({
         data: {
           title: input.title,
@@ -46,6 +56,7 @@ export const SolutionRouter = createTRPCRouter({
           challengeId: input.challengeId,
           userId: ctx.session.user.id,
           tags: input.tags,
+          image: image,
         },
       });
     }),

@@ -190,7 +190,7 @@ const NewSolutionPage: NextPage = () => {
               }}
             />
           </div>
-          <div className="flex flex-col space-x-2">
+          <div data-color-mode="light" className="flex flex-col space-x-2  ">
             <label className="label">
               <span className="label-text text-base font-medium">
                 Brief Description *

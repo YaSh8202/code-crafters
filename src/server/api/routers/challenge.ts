@@ -6,6 +6,7 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "~/server/api/trpc";
+import { shortDescGenerator } from "~/server/helpers/openaiHelper";
 
 export const challengeRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
@@ -28,20 +29,23 @@ export const challengeRouter = createTRPCRouter({
         title: z.string(),
         type: z.nativeEnum(ChallengeType),
         difficulty: z.nativeEnum(Difficulty),
-        shortDesc: z.string(),
         briefDesc: z.string(),
         imagesURL: z.array(z.string()),
         videoURL: z.optional(z.string()),
       })
     )
-    .mutation(({ input, ctx }) => {
+    .mutation(async ({ input, ctx }) => {
       const slug =
         input.title.toLowerCase().replace(/ /g, "-") + "-" + generateUID();
+
+      const shortDesc = await shortDescGenerator(input.title, input.type,input.difficulty, input.briefDesc);
+      console.log("shortDesc", shortDesc)
+
       return ctx.prisma.challenge.create({
         data: {
           title: input.title,
           type: input.type,
-          shortDesc: input.shortDesc,
+          shortDesc: shortDesc,
           briefDesc: input.briefDesc,
           imagesURL: input.imagesURL,
           videoURL: input.videoURL,

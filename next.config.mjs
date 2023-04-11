@@ -30,7 +30,7 @@ const config = {
     defaultLocale: "en",
   },
   images: {
-    domains: ["avatars.githubusercontent.com", "upcdn.io", "res.cloudinary.com", "firebasestorage.googleapis.com"],
+    domains: ["avatars.githubusercontent.com", "res.cloudinary.com",],
   },
   staticPageGenerationTimeout: 100,
 };

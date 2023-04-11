@@ -89,7 +89,6 @@ const NewChallengePage: NextPage = () => {
     ])) as [string[], string[]];
 
     createChallenge.mutate({
-      shortDesc: "shortDesc",
       difficulty: data.difficulty,
       imagesURL: urls[0],
       briefDesc: desc,
@@ -204,7 +203,7 @@ const NewChallengePage: NextPage = () => {
               getRootProps={getVideoRootProps}
             />
           </div>
-          <div className="flex flex-col space-x-2">
+          <div data-color-mode="light" className="flex flex-col space-x-2">
             <label className="label">
               <span className="label-text text-base font-medium">
                 Brief Description *
@@ -218,7 +217,6 @@ const NewChallengePage: NextPage = () => {
               preview="edit"
               enableScroll
               extraCommands={[codeEdit, codePreview, codeLive]}
-              
             />
           </div>
           <button

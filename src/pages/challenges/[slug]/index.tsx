@@ -80,8 +80,17 @@ const ChallengePage = (props: { slug: string }) => {
               ))}
             </div>
           </section>
-          <section className=" col-span-2 max-w-full  rounded-xl border bg-white p-6">
-            <MDEditor source={challenge.briefDesc} />
+          <section
+            data-color-mode="light"
+            className=" col-span-2 max-w-full rounded-xl   bg-white"
+          >
+            <MDEditor
+              style={{
+                // borderRadius: "0.5rem",
+              }}
+              className="p-6 border rounded-xl "
+              source={challenge.briefDesc}
+            />
           </section>
         </div>
       </main>

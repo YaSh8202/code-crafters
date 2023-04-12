@@ -1,5 +1,4 @@
 import { type NextPage } from "next";
-import { type Url } from "next/dist/shared/lib/router/router";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
@@ -47,7 +46,7 @@ const ProfilePage: NextPage = () => {
               </h3>
               <p className="  ">@{user.username}</p>
             </div>
-            <Link target="_blank" href={(user.githubURL as Url) || ""}>
+            <Link target="_blank" href={(user.githubURL as string) || ""}>
               {user.githubURL && <MdiGithub className="h-8 w-8" />}
             </Link>
           </div>

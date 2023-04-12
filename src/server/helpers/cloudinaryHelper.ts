@@ -1,7 +1,8 @@
 import { type UploadApiResponse, v2 as cloudinary } from "cloudinary";
 import { Readable } from "stream";
-import puppeteer from "puppeteer";
 import { env } from "~/env.mjs";
+import chromium from "chrome-aws-lambda";
+import { type Browser } from "puppeteer-core";
 
 cloudinary.config({
   cloud_name: env.CLOUDINARY_NAME,
@@ -28,12 +29,52 @@ const bufferUpload = async (buffer: Buffer) => {
   });
 };
 
+async function getBrowserInstance() {
+  const executablePath = await chromium.executablePath;
+
+  if (!executablePath) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
+    const puppeteer = require('puppeteer');
+    
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    return puppeteer.launch({
+      args: chromium.args,
+      headless: true,
+      defaultViewport: {
+        width: 1280,
+        height: 720,
+      },
+      ignoreHTTPSErrors: true,
+    });
+  }
+
+  return chromium.puppeteer.launch({
+    args: chromium.args,
+    defaultViewport: {
+      width: 1280,
+      height: 720,
+    },
+    executablePath,
+    headless: chromium.headless,
+    ignoreHTTPSErrors: true,
+  });
+}
+
 export async function getScreenshot(url: string): Promise<string> {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  await page.goto(url);
-  const screenshot = await page.screenshot();
-  await browser.close();
-  const { secure_url } = (await bufferUpload(screenshot)) as UploadApiResponse;
-  return secure_url;
+  let browser = null;
+
+  try {
+    browser = (await getBrowserInstance()) as Browser;
+    const page = await browser.newPage();
+    await page.goto(url);
+    const imageBuffer = await page.screenshot();
+    const { secure_url } = (await bufferUpload(
+      imageBuffer as Buffer
+    )) as UploadApiResponse;
+    console.log("secure_url", secure_url);
+    return secure_url;
+  } catch (e) {
+    console.error(e);
+    return "";
+  }
 }

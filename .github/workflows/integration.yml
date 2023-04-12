@@ -11,7 +11,7 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
       - name: Install NPM dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
       - name: Make envfile
         uses: SpicyPizza/create-envfile@v1.3
         with:

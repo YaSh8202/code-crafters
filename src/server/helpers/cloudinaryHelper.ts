@@ -92,7 +92,9 @@ export async function getScreenshot(url: string): Promise<string> {
   // await page.setViewport({ width: 2000, height: 1000 });
   await page.goto(url, { waitUntil: "networkidle0" });
   await page.close();
-  const buffer = (await page.screenshot()) as Buffer;
-  const { secure_url } = (await bufferUpload(buffer)) as UploadApiResponse;
+  const buffer = await page.screenshot();
+  const { secure_url } = (await bufferUpload(
+    buffer as Buffer
+  )) as UploadApiResponse;
   return secure_url;
 }

@@ -6,21 +6,27 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-export const shortDescGenerator = async (title: string, type: string, difficulty: string, desc: string) => {
-  const prompt = `This is a short description generator for a challenge description . You can input a long description and it will generate a short description for you. \n\nLong Description:\n Challenge Title:${title}\n Challenge Type: ${type}\n Difficulty: ${difficulty}\n  Description: ${desc}\n\nShort Description:`;
+export const shortDescGenerator = async (
+  title: string,
+  type: string,
+  difficulty: string,
+  desc: string
+) => {
+  const prompt = `Generate a short description for the following challenge:\n\nTitle: ${title}\nType: ${type}\nDifficulty: ${difficulty}\nDescription: ${desc}\n\n. Make sure the word range is strictly between 20-30 words.
+  `;
   try {
     const response = await openai.createCompletion(
       {
         prompt,
         model: "text-davinci-003",
-        temperature: 0,
-        max_tokens: 8
+        temperature: 0.7,
+        max_tokens: 40,
       },
       {
         timeout: 10000,
       }
     );
-    console.log("shortDescData", response);
+    // console.log("shortDescData", response);
     const data = response?.data?.choices?.[0]?.text;
     return data || "";
     // return response ? response.data?.choices?.[0].text : "";

@@ -1,9 +1,8 @@
 import { type UploadApiResponse, v2 as cloudinary } from "cloudinary";
 import { Readable } from "stream";
 import { env } from "~/env.mjs";
-import chrome from 'chrome-aws-lambda';
-import puppeteer from 'puppeteer-core';
-
+import chromium from "@sparticuz/chromium-min";
+import puppeteer from "puppeteer-core";
 
 cloudinary.config({
   cloud_name: env.CLOUDINARY_NAME,
@@ -62,26 +61,38 @@ const bufferUpload = async (buffer: Buffer) => {
 // }
 
 export async function getScreenshot(url: string): Promise<string> {
-  const options = process.env.AWS_REGION
-    ? {
-        args: chrome.args,
-        executablePath: await chrome.executablePath,
-        headless: chrome.headless
-      }
-    : {
-        args: [],
-        executablePath:
-          process.platform === 'win32'
-            ? 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe'
-            : process.platform === 'linux'
-            ? '/usr/bin/google-chrome'
-            : '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-      };
-  const browser = await puppeteer.launch(options);
+  // const options = process.env.AWS_REGION
+  //   ? {
+  //       args: chrome.args,
+  //       executablePath: await chrome.executablePath,
+  //       headless: chrome.headless
+  //     }
+  //   : {
+  //       args: [],
+  //       executablePath:
+  //         process.platform === 'win32'
+  //           ? 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe'
+  //           : process.platform === 'linux'
+  //           ? '/usr/bin/google-chrome'
+  //           : '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+  //     };
+
+  const browser = await puppeteer.launch({
+    args: chromium.args,
+    defaultViewport: chromium.defaultViewport,
+    executablePath: await chromium.executablePath(
+      "https://github.com/Sparticuz/chromium/releases/download/v110.0.1/chromium-v110.0.1-pack.tar"
+    ),
+    headless: Boolean(chromium.headless),
+    ignoreHTTPSErrors: true,
+  });
+
+  // const browser = await puppeteer.launch(options);
   const page = await browser.newPage();
-  await page.setViewport({ width: 2000, height: 1000 });
-  await page.goto(url, { waitUntil: 'networkidle0' });
-  const buffer =  await page.screenshot() as Buffer;
-  const {secure_url } = await bufferUpload(buffer) as UploadApiResponse;
+  // await page.setViewport({ width: 2000, height: 1000 });
+  await page.goto(url, { waitUntil: "networkidle0" });
+  await page.close();
+  const buffer = (await page.screenshot()) as Buffer;
+  const { secure_url } = (await bufferUpload(buffer)) as UploadApiResponse;
   return secure_url;
 }

@@ -60,7 +60,7 @@ const bufferUpload = async (buffer: Buffer) => {
 //   });
 // }
 
-export async function getScreenshot(url: string): Promise<string> {
+export async function getScreenshot(url: string): Promise<string | undefined> {
   // const options = process.env.AWS_REGION
   //   ? {
   //       args: chrome.args,
@@ -76,23 +76,27 @@ export async function getScreenshot(url: string): Promise<string> {
   //           ? '/usr/bin/google-chrome'
   //           : '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
   //     };
+  try {
+    const browser = await puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(
+        "https://github.com/Sparticuz/chromium/releases/download/v110.0.1/chromium-v110.0.1-pack.tar"
+      ),
+      headless: Boolean(chromium.headless),
+      ignoreHTTPSErrors: true,
+    });
 
-  const browser = await puppeteer.launch({
-    args: chromium.args,
-    defaultViewport: chromium.defaultViewport,
-    executablePath: await chromium.executablePath(
-      "https://github.com/Sparticuz/chromium/releases/download/v110.0.1/chromium-v110.0.1-pack.tar"
-    ),
-    headless: Boolean(chromium.headless),
-    ignoreHTTPSErrors: true,
-  });
-
-  // const browser = await puppeteer.launch(options);
-  const page = await browser.newPage();
-  // await page.setViewport({ width: 2000, height: 1000 });
-  await page.goto(url, { waitUntil: "networkidle0" });
-  await page.close();
-  const buffer = await page.screenshot();
-  const { secure_url } = (await bufferUpload(buffer)) as UploadApiResponse;
-  return secure_url;
+    // const browser = await puppeteer.launch(options);
+    const page = await browser.newPage();
+    // await page.setViewport({ width: 2000, height: 1000 });
+    await page.goto(url, { waitUntil: "networkidle0" });
+    await page.close();
+    const buffer = await page.screenshot();
+    const { secure_url } = (await bufferUpload(buffer)) as UploadApiResponse;
+    return secure_url;
+  } catch (e) {
+    console.log(e);
+    return undefined;
+  }
 }

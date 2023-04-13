@@ -46,7 +46,7 @@ export const SolutionRouter = createTRPCRouter({
           console.log(error);
         }
       }
-      console.log(image);
+      console.log("imageURL", image);
       return ctx.prisma.solution.create({
         data: {
           title: input.title,
@@ -60,4 +60,34 @@ export const SolutionRouter = createTRPCRouter({
         },
       });
     }),
+
+  getAll: publicProcedure.query(({ ctx }) => {
+    return ctx.prisma.solution.findMany({
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        tags: true,
+        createdAt: true,
+        _count: {
+          select: {
+            likes: true,
+            comments: true,
+          },
+        },
+        user: {
+          select: {
+            username: true,
+            name: true,
+            image: true,
+          },
+        },
+        challenge: {
+          select: {
+            type: true,
+          },
+        },
+      },
+    });
+  }),
 });

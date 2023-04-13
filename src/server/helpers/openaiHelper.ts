@@ -12,7 +12,7 @@ export const shortDescGenerator = async (
   difficulty: string,
   desc: string
 ) => {
-  const prompt = `Generate a short description for the following challenge:\n\nTitle: ${title}\nType: ${type}\nDifficulty: ${difficulty}\nDescription: ${desc}\n\n. Make sure the word range is strictly between 20-30 words.
+  const prompt = `Generate a short challenge introduction for the following challenge:\n\nTitle: ${title}\nType: ${type}\nDifficulty: ${difficulty}\nDescription: ${desc}\n\n. Make sure the word range is strictly between 20-30 words.
   `;
   try {
     const response = await openai.createCompletion(

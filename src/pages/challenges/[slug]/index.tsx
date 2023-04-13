@@ -20,11 +20,10 @@ const ChallengePage = (props: { slug: string }) => {
   });
 
   if (!challenge || !slug) return <div>Challenge not found</div>;
-
   return (
     <>
       <Head>
-        <title>Code Crafters | {challenge.title}</title>
+        <title>{challenge.title}</title>
       </Head>
       <main className="px-32 pt-8">
         <div className="grid grid-cols-2 gap-6 ">
@@ -82,13 +81,15 @@ const ChallengePage = (props: { slug: string }) => {
           </section>
           <section
             data-color-mode="light"
-            className=" col-span-2 max-w-full rounded-xl   bg-white"
+            className=" prose col-span-2 max-w-full rounded-xl  bg-white"
           >
             <MDEditor
-              style={{
-                // borderRadius: "0.5rem",
-              }}
-              className="p-6 border rounded-xl "
+              style={
+                {
+                  // borderRadius: "0.5rem",
+                }
+              }
+              className="rounded-xl border p-6 "
               source={challenge.briefDesc}
             />
           </section>

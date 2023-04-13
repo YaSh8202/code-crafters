@@ -12,7 +12,7 @@ const ChallengesPage: NextPage = () => {
       <Head>
         <title>Code Crafters</title>
       </Head>
-      <main className=" mx-auto xl:w-[75rem]">
+      <main className=" mx-auto max-w-7xl">
         <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-8">
           {challenges?.map((challenge) => (
             <ChallengeCard

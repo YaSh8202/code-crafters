@@ -1,5 +1,5 @@
 import { ChallengeType, Difficulty } from "@prisma/client";
-import { type NextPage } from "next";
+import type { GetServerSidePropsContext, NextPage } from "next";
 import Head from "next/head";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { api } from "~/utils/api";
@@ -20,6 +20,7 @@ import {
   codePreview,
   codeEdit,
 } from "@uiw/react-md-editor/lib/commands";
+import { getServerAuthSession } from "~/server/auth";
 const MDEditor = dynamic(
   () => import("@uiw/react-md-editor").then((mod) => mod.default),
   { ssr: false }
@@ -295,3 +296,20 @@ const uploadToCloudinary = async (acceptedFiles: File[], isVideo?: boolean) => {
   );
   return uploadedImages;
 };
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const session = await getServerAuthSession(ctx);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}

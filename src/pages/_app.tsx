@@ -18,7 +18,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   pageProps: { session, ...pageProps },
 }) => {
   return (
-    <main className={barlow.className}>
+    <main data-mode="light" className={barlow.className}>
       <SessionProvider session={session}>
         <Navbar />
         <PageHeader />

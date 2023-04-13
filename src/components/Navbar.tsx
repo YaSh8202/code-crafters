@@ -14,13 +14,18 @@ function Navbar() {
       </div>
       <div className="flex-none">
         <ul className="menu menu-horizontal px-1">
-          <li className="hidden md:block" >
+          <li className="hidden md:block">
             <Link href="/challenges" className="">
               CHALLENGES
             </Link>
           </li>
+          <li className="hidden md:block">
+            <Link href="/solutions" className="">
+              SOLUTIONS
+            </Link>
+          </li>
           {session?.user && (
-            <li className="hidden md:block" >
+            <li className="hidden md:block">
               <Link href="/new-challenge" className="">
                 Add Challenge
               </Link>
@@ -60,10 +65,10 @@ function Navbar() {
               ) : (
                 <button
                   onClick={() => void signIn("github")}
-                  className="flex items-center space-x-2 rounded-full bg-gray-800 py-2 px-3 uppercase text-white duration-150 hover:scale-[1.02] hover:bg-gray-900 "
+                  className="flex items-center rounded-full bg-gray-800 px-2 py-2 uppercase text-white duration-150 hover:scale-[1.02] hover:bg-gray-900 md:space-x-2 md:px-3 "
                 >
                   <p className=" hidden md:block">Log in with github</p>
-                  <MdiGithub fontSize={20} />
+                  <MdiGithub fontSize={24} />
                 </button>
               )}
             </>

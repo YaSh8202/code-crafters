@@ -13,9 +13,9 @@ generator client {
 //     projectDatabaseType = "PostgreSQL"
 //     projectNote         = "Test project description"
 // }
-// generator erd {
-//     provider = "prisma-erd-generator"
-// }
+generator erd {
+    provider = "prisma-erd-generator"
+}
 
 datasource db {
     provider = "postgresql"
@@ -58,7 +58,7 @@ model User {
     name           String?
     email          String?     @unique
     emailVerified  DateTime?
-    image          String?
+    image          String
     username       String      @unique
     about          String?
     githubURL      String?

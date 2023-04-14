@@ -2,6 +2,7 @@ import Image from "next/image";
 import React from "react";
 import { type RouterOutputs } from "~/utils/api";
 import Link from "next/link";
+import { timeAgo } from "~/utils/helpers";
 
 type Solution = RouterOutputs["solution"]["getAll"][0];
 
@@ -14,7 +15,7 @@ function SolutionCard({ solution }: { solution: Solution }) {
         breakInside: "avoid",
         pageBreakInside: "avoid",
       }}
-      className={`mx-0 my-5 flex w-full flex-col  rounded-xl border bg-white shadow-sm first:mt-0 dark:border-gray-700 dark:bg-gray-800 dark:shadow-slate-700/[.7] md:mx-4  `}
+      className={` mx-4 my-4 flex   min-w-[20rem] flex-1 flex-col rounded-xl border  bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800  dark:shadow-slate-700/[.7] md:min-w-[24rem] lg:max-w-[calc(33.33%-2.5rem)]  `}
     >
       <Image
         className="h-auto w-full rounded-t-xl   "
@@ -25,17 +26,25 @@ function SolutionCard({ solution }: { solution: Solution }) {
       />
       <div className="p-4 md:p-5">
         <p className="text-sm text-gray-500">Submitted {timeElpsed}</p>
-        <h3 className="text-lg font-bold text-gray-800 dark:text-white">
-          {solution.title}
-        </h3>
+        <Link href={`/solutions/${solution.id}`}>
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
+            {solution.title}
+          </h3>
+        </Link>
+        <Link href={`/challenges/${solution.challenge.slug}`}>
+          <p className="text-sm text-gray-500 hover:underline ">
+            Challenge : {solution.challenge.title}
+          </p>
+        </Link>
         <div className="flex flex-row flex-wrap items-center gap-x-2 text-sm  ">
           {solution.tags.map((tag) => (
             <span key={tag}>#{tag}</span>
           ))}
         </div>
-        <div className="flex flex-row items-center justify-between gap-x-2 my-1  ">
-          <span className='font-semibold uppercase text-lime-600' >{solution.challenge.type}</span>
-          
+        <div className="my-1 flex flex-row items-center justify-between gap-x-2  ">
+          <span className="font-semibold uppercase text-lime-600">
+            {solution.challenge.type}
+          </span>
         </div>
         <div className="my-2 flex flex-row items-center space-x-3 border-y py-3">
           <Link className="group" href={`/profile/${solution.user.username}`}>
@@ -74,28 +83,3 @@ function SolutionCard({ solution }: { solution: Solution }) {
 
 export default SolutionCard;
 
-function timeAgo(date: Date) {
-  const time = Date.now() - new Date(date).getTime();
-
-  // time in milliseconds
-  const second = 1000;
-  const minute = 60 * second;
-  const hour = 60 * minute;
-  const day = 24 * hour;
-
-  if (time < second) {
-    return "just now";
-  } else if (time < minute) {
-    const count = Math.floor(time / second);
-    return `${count} second${count > 1 ? "s" : ""} ago`;
-  } else if (time < hour) {
-    const count = Math.floor(time / minute);
-    return `${count} minute${count > 1 ? "s" : ""} ago`;
-  } else if (time < day) {
-    const count = Math.floor(time / hour);
-    return `${count} hour${count > 1 ? "s" : ""} ago`;
-  } else {
-    const count = Math.floor(time / day);
-    return `${count} day${count > 1 ? "s" : ""} ago`;
-  }
-}

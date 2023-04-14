@@ -5,7 +5,6 @@ import SolutionCard from "../../components/SolutionCard";
 
 const SolutionsPage: NextPage = () => {
   const { data: solutions } = api.solution.getAll.useQuery();
-  console.log("solutions", solutions);
 
   return (
     <>
@@ -15,7 +14,7 @@ const SolutionsPage: NextPage = () => {
       <main>
         <section style={{
           // columnGap: "1em",
-        }} className=" columns-[25em] max-w-7xl mx-auto ">
+        }} className="max-w-7xl mx-auto flex flex-wrap ">
           {solutions?.map((solution) => (
             <SolutionCard key={solution.id} solution={solution} />
           ))}

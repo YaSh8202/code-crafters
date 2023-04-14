@@ -23,7 +23,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         <Navbar />
         <PageHeader />
         <div className="mx-auto flex min-h-screen w-[min(100%-2rem,1400px)] flex-col ">
-          <div className="my-6 flex-1">
+          <div className=" flex-1">
             <Component {...pageProps} />
           </div>
           <Footer />

@@ -13,9 +13,9 @@ generator client {
 //     projectDatabaseType = "PostgreSQL"
 //     projectNote         = "Test project description"
 // }
-generator erd {
-    provider = "prisma-erd-generator"
-}
+// generator erd {
+//     provider = "prisma-erd-generator"
+// }
 
 datasource db {
     provider = "postgresql"

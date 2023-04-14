@@ -62,7 +62,9 @@ const NewChallengePage: NextPage = () => {
     multiple: false,
     maxSize: 10000000, // 10MB
   });
-  const [desc, setDesc] = useState<string>("");
+  const [desc, setDesc] = useState<string>(
+    startingMarkdownTemplate["Frontend"]
+  );
   const [showImageError, setShowImageError] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -204,21 +206,24 @@ const NewChallengePage: NextPage = () => {
               getRootProps={getVideoRootProps}
             />
           </div>
-          <div data-color-mode="light" className="flex flex-col space-x-2">
+          <div data-color-mode="light" className="flex flex-col space-x-2  ">
             <label className="label">
               <span className="label-text text-base font-medium">
                 Brief Description *
               </span>
             </label>
-            <MDEditor
-              value={desc}
-              onChange={(val) => {
-                setDesc(val || "");
-              }}
-              preview="edit"
-              enableScroll
-              extraCommands={[codeEdit, codePreview, codeLive]}
-            />
+            <section className="">
+              <MDEditor
+                value={desc}
+                className=""
+                onChange={(val) => {
+                  setDesc(val || "");
+                }}
+                preview="edit"
+                enableScroll
+                extraCommands={[codeEdit, codePreview, codeLive]}
+              />
+            </section>
           </div>
           <button
             type="submit"
@@ -313,3 +318,33 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     props: {},
   };
 }
+
+const startingMarkdownTemplate = {
+  Frontend: `
+  ## Brief
+  
+  [Provide a brief description of the challenge]
+  
+  ## Requirements
+  
+  - [List of requirements]
+  
+  ## Design
+  
+  [Include a screenshot or a link to the design file]
+  
+  ## Data
+  
+  [If applicable, provide a link to the data source]
+  
+  ## Instructions
+  
+  - [Step by step instructions for completing the challenge]
+  - [Any additional information that the user may need]
+  
+  ## Bonus
+  
+  - [List of bonus tasks that can be completed for extra points]
+  - [Include any specific instructions for completing the bonus tasks]
+  `,
+};

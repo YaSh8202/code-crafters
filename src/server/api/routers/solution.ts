@@ -85,9 +85,60 @@ export const SolutionRouter = createTRPCRouter({
         challenge: {
           select: {
             type: true,
+            title: true,
+            slug: true,
           },
         },
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
   }),
+
+  getById: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(({ ctx, input }) => {
+      return ctx.prisma.solution.findUnique({
+        where: {
+          id: input.id,
+        },
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          tags: true,
+          createdAt: true,
+          liveURL: true,
+        image: true,
+        repoURL: true,
+          _count: {
+            select: {
+              likes: true,
+              comments: true,
+            },
+          },
+          user: {
+            select: {
+              username: true,
+              name: true,
+              image: true,
+            },
+          },
+          challenge: {
+            select: {
+              type: true,
+              title: true,
+              slug: true,
+              imagesURL: true,
+              difficulty: true,
+            },
+          },
+        },
+      });
+    }),
 });

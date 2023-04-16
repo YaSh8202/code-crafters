@@ -2,6 +2,15 @@ import { type Difficulty, type ChallengeType } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { StarFilled, StarOutline } from "./Icones";
+import { type RouterOutputs, api } from "~/utils/api";
+import type {
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+} from "@tanstack/react-query";
+
+type AllChallenges = RouterOutputs["challenge"]["getAll"];
 
 type Props = {
   title: string;
@@ -10,6 +19,10 @@ type Props = {
   type: ChallengeType;
   slug: string;
   difficulty: Difficulty;
+  starCount: number;
+  refetch: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<AllChallenges, unknown>>;
 };
 
 function ChallengeCard({
@@ -19,19 +32,48 @@ function ChallengeCard({
   image,
   type,
   difficulty,
+  starCount,
+  refetch,
 }: Props) {
+  const toggleStar = api.challenge.toggleStar.useMutation({
+    onSuccess: (data) => {
+      console.log(data);
+      void refetch();
+      void refetchIsStarred();
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+  const { data: isStarred, refetch: refetchIsStarred } = api.challenge.isStarred.useQuery({ slug });
+
+  const handleStar = async () => {
+    await toggleStar.mutateAsync({ slug });
+  };
+
   return (
     <div className="card max-w-[24rem] justify-self-center border bg-base-100  ">
-      <figure>
+      <figure className="relative">
         <Link href={`/challenges/${slug}`}>
           <Image
             src={image ?? ""}
             alt={`${title}-image`}
             width={384}
             height={256}
-            className="transition-all duration-300 hover:scale-105 h-[256px] object-cover"
+            className="h-[256px] object-cover transition-all duration-300 hover:scale-105"
           />
         </Link>
+        <button
+          onClick={() => void handleStar()}
+          className={`absolute right-3 top-3 flex items-center gap-1  rounded-full border bg-gray-100 px-4 py-2 font-semibold uppercase duration-150 hover:brightness-90 ${isStarred? "text-blue-500":"text-gray-700" } `}
+        >
+          {isStarred ? (
+            <StarFilled color={"#3b82f6"} fontSize={20} />
+          ) : (
+            <StarOutline fontSize={20} />
+          )}
+          {starCount}
+        </button>
       </figure>
       <div className="card-body">
         <Link

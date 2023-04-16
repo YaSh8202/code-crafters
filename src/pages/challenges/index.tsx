@@ -5,7 +5,7 @@ import ChallengeCard from "~/components/ChallengeCard";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 
 const ChallengesPage: NextPage = () => {
-  const { data: challenges } = api.challenge.getAll.useQuery();
+  const { data: challenges, refetch } = api.challenge.getAll.useQuery();
 
   return (
     <>
@@ -23,6 +23,8 @@ const ChallengesPage: NextPage = () => {
               image={challenge.imagesURL[0]}
               type={challenge.type}
               difficulty={challenge.difficulty}
+              starCount={challenge._count.stars}
+              refetch={refetch}
             />
           ))}
         </div>

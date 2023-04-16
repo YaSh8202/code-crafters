@@ -21,14 +21,14 @@ git clone https://github.com/YaSh8202/code-crafters.git
 ```
 3. Install the dependencies:
 ```bash
-  npm install
+  pnpm install
 ```
 4. Go to Supabase and create a new project and get the database url.
 5. Create a new oauth app on github and add the callback url as `http://localhost:3000/api/auth/callback/github`.
 6. Now create a `.env` file in the root directory and add the variables as shown in `.env.example`.
 7. Now run the development server:
 ```bash
-  npm run dev
+  pnpm dev
 ```
 
 ## ERD

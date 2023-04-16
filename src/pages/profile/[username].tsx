@@ -29,7 +29,12 @@ const ProfilePage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <section className="flex flex-col items-center space-y-5 bg-white px-2 py-4 md:flex-row md:space-y-0 md:space-x-8 md:px-6 md:py-8 max-w-[80rem] mx-auto ">
+        <section
+          style={{
+            clipPath: "inset(0 -100vmax)",
+          }}
+          className="mx-auto flex max-w-[80rem] flex-col items-center space-y-5 bg-white px-2 py-4 shadow-[0_0_0_100vmax] shadow-white md:flex-row md:space-x-8 md:space-y-0 md:px-6 md:py-8 "
+        >
           <div>
             <Image
               className=" h-32 w-32 rounded-full md:h-40 md:w-40 "
@@ -39,7 +44,7 @@ const ProfilePage: NextPage = () => {
               height={200}
             />
           </div>
-          <div className="flex gap-3 flex-col justify-between flex-[2] ">
+          <div className="flex flex-[2] flex-col justify-between gap-3 ">
             <div className="flex flex-col items-center md:items-start">
               <h3 className="text-center text-2xl font-medium  text-gray-900 ">
                 {user.name}

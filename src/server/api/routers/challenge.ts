@@ -19,6 +19,11 @@ export const challengeRouter = createTRPCRouter({
         imagesURL: true,
         difficulty: true,
         slug: true,
+        _count: {
+          select: {
+            stars: true,
+          },
+        },
       },
     });
   }),
@@ -38,8 +43,13 @@ export const challengeRouter = createTRPCRouter({
       const slug =
         input.title.toLowerCase().replace(/ /g, "-") + "-" + generateUID();
 
-      const shortDesc = await shortDescGenerator(input.title, input.type,input.difficulty, input.briefDesc);
-      console.log("shortDesc", shortDesc)
+      const shortDesc = await shortDescGenerator(
+        input.title,
+        input.type,
+        input.difficulty,
+        input.briefDesc
+      );
+      console.log("shortDesc", shortDesc);
 
       return ctx.prisma.challenge.create({
         data: {
@@ -95,6 +105,82 @@ export const challengeRouter = createTRPCRouter({
           id: true,
         },
       });
+    }),
+
+  toggleStar: protectedProcedure
+    .input(z.object({ slug: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const challenge = await ctx.prisma.challenge.findUnique({
+        where: {
+          slug: input.slug,
+        },
+        select: {
+          stars: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      });
+
+      if (!challenge) {
+        throw new Error("Challenge not found");
+      }
+      if (challenge.stars.find((user) => user.id === ctx.session.user.id)) {
+        return ctx.prisma.challenge.update({
+          where: {
+            slug: input.slug,
+          },
+          data: {
+            stars: {
+              disconnect: {
+                id: ctx.session.user.id,
+              },
+            },
+          },
+        });
+      }
+
+      return ctx.prisma.challenge.update({
+        where: {
+          slug: input.slug,
+        },
+        data: {
+          stars: {
+            connect: {
+              id: ctx.session.user.id,
+            },
+          },
+        },
+      });
+    }),
+
+  isStarred: publicProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(async ({ input, ctx }) => {
+
+      if(!ctx.session?.user) return false;
+
+      const challenge = await ctx.prisma.challenge.findUnique({
+        where: {
+          slug: input.slug,
+        },
+        select: {
+          stars: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      });
+
+      if (!challenge) {
+        throw new Error("Challenge not found");
+      }
+      if (challenge.stars.find((user) => user.id === ctx.session?.user.id)) {
+        return true;
+      }
+      return false;
     }),
 });
 

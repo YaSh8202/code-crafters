@@ -32,7 +32,7 @@ const SolutionPage = ({ id }: { id: string }) => {
           style={{
             backgroundImage: `url(${image || ""})`,
           }}
-          className="relative left-[calc(-50vw+50%)] w-screen px-4 bg-gray-900/80  bg-cover bg-center bg-no-repeat bg-blend-multiply "
+          className="relative left-[calc(-50vw+50%)] w-screen bg-gray-900/80 bg-cover  bg-center bg-no-repeat px-4 bg-blend-multiply "
         >
           <div className=" mx-auto  max-w-6xl  py-8 text-gray-100 ">
             <div className="mx-auto flex max-w-4xl flex-col items-center py-12 ">
@@ -160,7 +160,7 @@ const Challenge = ({
       style={{
         clipPath: "inset(0 -100vmax)",
       }}
-      className="flex border-b items-center justify-between bg-white px-3 py-5 shadow-[0_0_0_100vmax] shadow-white"
+      className="flex items-center justify-between border-b bg-white px-3 py-5 shadow-[0_0_0_100vmax] shadow-white"
     >
       <div className="flex items-center">
         {image && (
@@ -174,14 +174,24 @@ const Challenge = ({
         )}
         <div className="flex flex-col items-start gap-1">
           <p>This is a solution for...</p>
-          <Link href={`/challenges/${slug}`} className="text-lg font-medium hover:underline " >{title}</Link>
+          <Link
+            href={`/challenges/${slug}`}
+            className="text-lg font-medium hover:underline "
+          >
+            {title}
+          </Link>
           <div className="flex items-center gap-3">
-            <p className='uppercase text-green-500 ' >{type}</p>
-            <p className='uppercase text-red-500 ' >{difficulty}</p>
+            <p className="uppercase text-green-500 ">{type}</p>
+            <p className="uppercase text-red-500 ">{difficulty}</p>
           </div>
         </div>
       </div>
-      <Link className="items-center gap-2 hidden md:flex  rounded-full text-white bg-blue-600 px-5 py-2 text-lg font-semibold uppercase text-gray-800 duration-150 hover:brightness-90 " href={`/challenges/${slug}`}>View Challenge</Link>
+      <Link
+        className="hidden items-center gap-2 rounded-full  bg-blue-600 px-6 py-2 text-lg font-semibold uppercase text-white duration-150  hover:brightness-90 md:flex "
+        href={`/challenges/${slug}`}
+      >
+        View Challenge
+      </Link>
     </div>
   );
 };

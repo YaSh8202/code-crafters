@@ -17,17 +17,22 @@ function SolutionCard({ solution }: { solution: Solution }) {
       }}
       className={` mx-4 my-4 flex   min-w-[20rem] flex-1 flex-col rounded-xl border  bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800  dark:shadow-slate-700/[.7] md:min-w-[24rem] lg:max-w-[calc(33.33%-2.5rem)]  `}
     >
+      <Link className='overflow-hidden rounded-t-xl  ' href={`/solutions/${solution.id}`}>
       <Image
-        className="h-auto w-full rounded-t-xl   "
-        src="https://res.cloudinary.com/dz209s6jk/image/upload/f_auto,q_auto,w_475/Screenshots/dj1lkfgrgxd76rhtgcdz.jpg"
+        className="h-auto w-full rounded-t-xl transition-all duration-300 hover:scale-105   "
+        src={
+          solution.image ||
+          "https://res.cloudinary.com/dz209s6jk/image/upload/f_auto,q_auto,w_475/Screenshots/dj1lkfgrgxd76rhtgcdz.jpg"
+        }
         alt="Image Description"
         width={300}
         height={250}
       />
+      </Link>
       <div className="p-4 md:p-5">
         <p className="text-sm text-gray-500">Submitted {timeElpsed}</p>
         <Link href={`/solutions/${solution.id}`}>
-          <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-white hover:underline ">
             {solution.title}
           </h3>
         </Link>
@@ -82,4 +87,3 @@ function SolutionCard({ solution }: { solution: Solution }) {
 }
 
 export default SolutionCard;
-

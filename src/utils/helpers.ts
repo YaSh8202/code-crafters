@@ -1,3 +1,5 @@
+import { type UploadApiResponse } from "cloudinary";
+
 export function timeAgo(date: Date) {
   const time = Date.now() - new Date(date).getTime();
 
@@ -23,3 +25,28 @@ export function timeAgo(date: Date) {
     return `${count} day${count > 1 ? "s" : ""} ago`;
   }
 }
+
+export const uploadToCloudinary = async (
+  acceptedFiles: File[],
+  isVideo?: boolean
+) => {
+  const uploadedImages = await Promise.all(
+    acceptedFiles.map(async (file: File) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "fpbrzu0b");
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/dpuscktmu/${
+          isVideo ? "video" : "image"
+        }/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const data = (await res.json()) as UploadApiResponse;
+      return data.secure_url;
+    })
+  );
+  return uploadedImages;
+};

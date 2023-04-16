@@ -5,12 +5,8 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
 import {
-  type FileWithPath,
   useDropzone,
-  type DropzoneRootProps,
-  type DropzoneInputProps,
 } from "react-dropzone";
-import { type UploadApiResponse } from "cloudinary";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import "@uiw/react-md-editor/markdown-editor.css";
@@ -21,6 +17,8 @@ import {
   codeEdit,
 } from "@uiw/react-md-editor/lib/commands";
 import { getServerAuthSession } from "~/server/auth";
+import DropZoneInput from "~/components/DropZoneInput";
+import { uploadToCloudinary } from "~/utils/helpers";
 const MDEditor = dynamic(
   () => import("@uiw/react-md-editor").then((mod) => mod.default),
   { ssr: false }
@@ -91,7 +89,7 @@ const NewChallengePage: NextPage = () => {
       await uploadToCloudinary(acceptedVideoFiles, true),
     ])) as [string[], string[]];
 
-    createChallenge.mutate({
+    await createChallenge.mutateAsync({
       difficulty: data.difficulty,
       imagesURL: urls[0],
       briefDesc: desc,
@@ -247,60 +245,8 @@ const NewChallengePage: NextPage = () => {
 
 export default NewChallengePage;
 
-function DropZoneInput({
-  acceptedFiles,
-  getRootProps,
-  getInputProps,
-}: {
-  acceptedFiles: File[];
-  getRootProps: <T extends DropzoneRootProps>(props?: T | undefined) => T;
-  getInputProps: <T extends DropzoneInputProps>(props?: T | undefined) => T;
-}) {
-  const files = acceptedFiles.map((file: FileWithPath) => (
-    <li key={file.path}>
-      {file.path} - {(file.size / 1000).toFixed(1)} KB
-    </li>
-  ));
 
-  return (
-    <section className="container">
-      <div
-        {...getRootProps({
-          className:
-            "flex-1 h-24 justify-center flex flex-col items-center p-5 border-2 rounded-md border-dashed transition duration-150 ease-in-out border-[hsl(214.29_30.061%_31.961%)]/20 text-gray-400 focus:border-blue-400  focus:text-blue-400 cursor-pointer outline-none",
-        })}
-      >
-        <input {...getInputProps()} />
-        <p>Drag n drop some files here, or click to select files</p>
-      </div>
-      <aside>
-        <h4>Files</h4>
-        <ul>{files}</ul>
-      </aside>
-    </section>
-  );
-}
-const uploadToCloudinary = async (acceptedFiles: File[], isVideo?: boolean) => {
-  const uploadedImages = await Promise.all(
-    acceptedFiles.map(async (file: File) => {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", "fpbrzu0b");
-      const res = await fetch(
-        `https://api.cloudinary.com/v1_1/dpuscktmu/${
-          isVideo ? "video" : "image"
-        }/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-      const data = (await res.json()) as UploadApiResponse;
-      return data.secure_url;
-    })
-  );
-  return uploadedImages;
-};
+
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const session = await getServerAuthSession(ctx);

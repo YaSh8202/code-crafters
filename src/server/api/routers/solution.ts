@@ -1,11 +1,9 @@
 import { z } from "zod";
-
 import {
   createTRPCRouter,
   publicProcedure,
   protectedProcedure,
 } from "~/server/api/trpc";
-import { getScreenshot } from "~/server/helpers/cloudinaryHelper";
 
 export const SolutionRouter = createTRPCRouter({
   getAllByUser: protectedProcedure.query(({ ctx }) => {
@@ -35,18 +33,14 @@ export const SolutionRouter = createTRPCRouter({
         liveURL: z.optional(z.string()),
         challengeId: z.string(),
         tags: z.array(z.string()),
+        image: z.string(),
       })
     )
     .mutation(async ({ input, ctx }) => {
-      let image = undefined;
-      if (input.liveURL) {
-        try {
-          image = await getScreenshot(input.liveURL);
-        } catch (error) {
-          console.log(error);
-        }
-      }
-      console.log("imageURL", image);
+      // const { secure_url: image } = (await bufferUpload(
+      //   JSON.parse(input.image) as Buffer
+      // )) as UploadApiResponse;
+
       return ctx.prisma.solution.create({
         data: {
           title: input.title,
@@ -56,7 +50,7 @@ export const SolutionRouter = createTRPCRouter({
           challengeId: input.challengeId,
           userId: ctx.session.user.id,
           tags: input.tags,
-          image: image,
+          image: input.image,
         },
       });
     }),
@@ -69,6 +63,7 @@ export const SolutionRouter = createTRPCRouter({
         description: true,
         tags: true,
         createdAt: true,
+        image: true,
         _count: {
           select: {
             likes: true,
@@ -114,8 +109,8 @@ export const SolutionRouter = createTRPCRouter({
           tags: true,
           createdAt: true,
           liveURL: true,
-        image: true,
-        repoURL: true,
+          image: true,
+          repoURL: true,
           _count: {
             select: {
               likes: true,

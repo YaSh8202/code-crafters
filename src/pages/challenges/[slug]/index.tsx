@@ -8,6 +8,7 @@ import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
 import { prisma } from "~/server/db";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
+import { useSession } from "next-auth/react";
 const MDEditor = dynamic(
   () => import("@uiw/react-md-editor").then((mod) => mod.default.Markdown),
   { ssr: false }
@@ -18,6 +19,7 @@ const ChallengePage = (props: { slug: string }) => {
   const { data: challenge } = api.challenge.getBySlug.useQuery({
     slug: slug,
   });
+  const { status } = useSession();
 
   if (!challenge || !slug) return <div>Challenge not found</div>;
   return (
@@ -39,12 +41,16 @@ const ChallengePage = (props: { slug: string }) => {
               </div>
               <h2 className="text-3xl font-semibold">{challenge.title}</h2>
               <p>{challenge.shortDesc}</p>
-              <Link
-                href={`/challenges/${slug}/solutions/new`}
-                className="btn-primary btn w-48 "
-              >
-                Start Challenge
-              </Link>
+              {status === "authenticated" && (
+                <Link
+                  href={`/challenges/${slug}/solutions/new`}
+                  className={`btn-primary btn w-48 ${
+                    status === "authenticated" ? "" : "btn-disabled"
+                  } `}
+                >
+                  Start Challenge
+                </Link>
+              )}
             </div>
             <div className=" carousel w-full flex-1">
               {challenge.imagesURL?.map((imgSrc, i) => (

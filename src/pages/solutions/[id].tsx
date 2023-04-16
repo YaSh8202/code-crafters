@@ -36,7 +36,7 @@ const SolutionPage = ({ id }: { id: string }) => {
         >
           <div className=" mx-auto  max-w-6xl  py-8 text-gray-100 ">
             <div className="mx-auto flex max-w-4xl flex-col items-center py-12 ">
-              <p>Submitted about {timeAgo(solution?.createdAt)}</p>
+              <p>Submitted about {timeAgo(solution.createdAt)}</p>
               <h1 className="my-3 text-3xl font-semibold tracking-wider ">
                 {solution.title}
               </h1>

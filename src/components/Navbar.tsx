@@ -44,7 +44,7 @@ function Navbar() {
                         width={40}
                         height={40}
                         alt="User"
-                        src={session?.user.image}
+                        src={session.user.image}
                       />
                     </div>
                   </label>

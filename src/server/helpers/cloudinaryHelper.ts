@@ -1,8 +1,6 @@
-import { type UploadApiResponse, v2 as cloudinary } from "cloudinary";
+import { v2 as cloudinary } from "cloudinary";
 import { Readable } from "stream";
 import { env } from "~/env.mjs";
-import chromium from "@sparticuz/chromium-min";
-import puppeteer from "puppeteer-core";
 
 cloudinary.config({
   cloud_name: env.CLOUDINARY_NAME,
@@ -10,7 +8,7 @@ cloudinary.config({
   api_secret: env.CLOUDINARY_API_SECRET,
 });
 
-const bufferUpload = async (buffer: Buffer) => {
+export const bufferUpload = async (buffer: Buffer) => {
   return new Promise((resolve, reject) => {
     const writeStream = cloudinary.uploader.upload_stream((err, result) => {
       if (err) {
@@ -59,44 +57,3 @@ const bufferUpload = async (buffer: Buffer) => {
 //     ignoreHTTPSErrors: true,
 //   });
 // }
-
-export async function getScreenshot(url: string): Promise<string | undefined> {
-  // const options = process.env.AWS_REGION
-  //   ? {
-  //       args: chrome.args,
-  //       executablePath: await chrome.executablePath,
-  //       headless: chrome.headless
-  //     }
-  //   : {
-  //       args: [],
-  //       executablePath:
-  //         process.platform === 'win32'
-  //           ? 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe'
-  //           : process.platform === 'linux'
-  //           ? '/usr/bin/google-chrome'
-  //           : '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-  //     };
-  try {
-    const browser = await puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(
-        "https://github.com/Sparticuz/chromium/releases/download/v110.0.1/chromium-v110.0.1-pack.tar"
-      ),
-      headless: Boolean(chromium.headless),
-      ignoreHTTPSErrors: true,
-    });
-
-    // const browser = await puppeteer.launch(options);
-    const page = await browser.newPage();
-    // await page.setViewport({ width: 2000, height: 1000 });
-    await page.goto(url, { waitUntil: "networkidle0" });
-    await page.close();
-    const buffer = await page.screenshot();
-    const { secure_url } = (await bufferUpload(buffer)) as UploadApiResponse;
-    return secure_url;
-  } catch (e) {
-    console.log(e);
-    return undefined;
-  }
-}

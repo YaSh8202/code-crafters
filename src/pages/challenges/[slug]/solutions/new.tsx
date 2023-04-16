@@ -13,6 +13,8 @@ import {
   codePreview,
   codeEdit,
 } from "@uiw/react-md-editor/lib/commands";
+import { useDropzone } from "react-dropzone";
+import DropZoneInput from "~/components/DropZoneInput";
 
 type FormValues = {
   title: string;
@@ -63,8 +65,9 @@ const NewSolutionPage: NextPage = () => {
   const [tags, setTags] = useState<string[]>([]);
   const [desc, setDesc] = useState<string>("");
   const router = useRouter();
+  const [showImageError, setShowImageError] = useState(false);
   const { slug } = router.query;
-  const challengeId = api.challenge.getChallengeIdBySlug.useQuery({
+  const { data: challengeId } = api.challenge.getChallengeIdBySlug.useQuery({
     slug: slug as string,
   });
   const createNewSolution = api.solution.create.useMutation({
@@ -72,19 +75,38 @@ const NewSolutionPage: NextPage = () => {
       void router.push(`/challenges/${slug as string}/solutions`);
     },
   });
+  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+    multiple: false,
+    accept: {
+      "image/jpeg": [".jpg", ".jpeg"],
+      "image/png": [".png"],
+      "image/webp": [".webp"],
+    },
+    maxSize: 5000000, // 5MB
+  });
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     console.log(data);
-    if (!challengeId.data?.id) {
+    if (!challengeId?.id) {
       return;
     }
-    createNewSolution.mutate({
-      repoURL: data.repoURL,
-      liveURL: data.liveURL,
-      tags: tags,
-      description: desc,
-      title: data.title,
-      challengeId: challengeId.data?.id,
-    });
+    if (!acceptedFiles[0]) {
+      setShowImageError(true);
+      return;
+    }
+    const reader = new FileReader();
+    reader.readAsDataURL(acceptedFiles[0]);
+    reader.onloadend =  () => {
+    console.log("url",reader.result)
+      createNewSolution.mutate({
+        repoURL: data.repoURL,
+        liveURL: data.liveURL,
+        tags: tags,
+        description: desc,
+        title: data.title,
+        challengeId: challengeId.id,
+        image: reader.result as string,
+      });
+    };
   };
   return (
     <>
@@ -188,6 +210,23 @@ const NewSolutionPage: NextPage = () => {
               onChange={(e) => {
                 setTags(e.map((tag) => tag.value));
               }}
+            />
+          </div>
+          <div className="flex flex-col space-x-2">
+            <label className="label justify-start space-x-2">
+              <span className=" label-text text-base font-medium">
+                Challenge Images *
+              </span>
+              {showImageError && (
+                <span className="label-text-alt text-red-400">
+                  Please upload at least one image
+                </span>
+              )}
+            </label>
+            <DropZoneInput
+              acceptedFiles={acceptedFiles}
+              getInputProps={getInputProps}
+              getRootProps={getRootProps}
             />
           </div>
           <div data-color-mode="light" className="flex flex-col space-x-2  ">

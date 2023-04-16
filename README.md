@@ -8,6 +8,7 @@ Code Crafters is a web platform that provides challenges for users who want to p
 - [Prisma](https://prisma.io)
 - [Tailwind CSS](https://tailwindcss.com)
 - [tRPC](https://trpc.io)
+- 
 
 ## Getting Started
 To get started with this project, you will need to have Node.js and npm installed on your machine.
@@ -19,14 +20,10 @@ git clone https://github.com/YaSh8202/code-crafters.git
 ```bash
  cd code-crafters
 ```
-3. Install the dependencies:
-```bash
-  pnpm install
-```
-4. Go to Supabase and create a new project and get the database url.
-5. Create a new oauth app on github and add the callback url as `http://localhost:3000/api/auth/callback/github`.
-6. Now create a `.env` file in the root directory and add the variables as shown in `.env.example`.
-7. Now run the development server:
+3. Install the dependencies: `pnpm install`
+4. Go to .env.sample and follow the instructions to get the required keys and tokens.
+5. Now create a .env file in the root directory and paste the keys and tokens in it.
+6. Now run the development server:
 ```bash
   pnpm dev
 ```

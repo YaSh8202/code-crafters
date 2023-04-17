@@ -31,23 +31,31 @@ export const SolutionRouter = createTRPCRouter({
         description: z.optional(z.string()),
         repoURL: z.string(),
         liveURL: z.optional(z.string()),
-        challengeId: z.string(),
+        slug: z.string(),
         tags: z.array(z.string()),
         image: z.string(),
       })
     )
     .mutation(async ({ input, ctx }) => {
-      // const { secure_url: image } = (await bufferUpload(
-      //   JSON.parse(input.image) as Buffer
-      // )) as UploadApiResponse;
+      const challengeId = await ctx.prisma.challenge.findUnique({
+        where: {
+          slug: input.slug,
+        },
+        select: {
+          id: true,
+        },
+      });
 
+      if (!challengeId) {
+        throw new Error("Challenge not found");
+      }
       return ctx.prisma.solution.create({
         data: {
           title: input.title,
           description: input.description,
           repoURL: input.repoURL,
           liveURL: input.liveURL,
-          challengeId: input.challengeId,
+          challengeId: challengeId.id,
           userId: ctx.session.user.id,
           tags: input.tags,
           image: input.image,
@@ -66,7 +74,6 @@ export const SolutionRouter = createTRPCRouter({
         image: true,
         _count: {
           select: {
-            likes: true,
             comments: true,
           },
         },
@@ -111,9 +118,9 @@ export const SolutionRouter = createTRPCRouter({
           liveURL: true,
           image: true,
           repoURL: true,
+          voteValue: true,
           _count: {
             select: {
-              likes: true,
               comments: true,
             },
           },
@@ -135,5 +142,191 @@ export const SolutionRouter = createTRPCRouter({
           },
         },
       });
+    }),
+
+  upvote: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const voteExist = await ctx.prisma.vote.findUnique({
+        where: {
+          solutionId_userId: {
+            userId: ctx.session.user.id,
+            solutionId: input.id,
+          },
+        },
+      });
+
+      if (voteExist) {
+        if (voteExist.voteType === 1)
+          return ctx.prisma.solution.update({
+            where: {
+              id: input.id,
+            },
+            data: {
+              voteValue: {
+                decrement: 1,
+              },
+              votes: {
+                delete: {
+                  solutionId_userId: {
+                    userId: ctx.session.user.id,
+                    solutionId: input.id,
+                  },
+                },
+              },
+            },
+          });
+
+        return ctx.prisma.solution.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            voteValue: {
+              increment: 2,
+            },
+            votes: {
+              update: {
+                where: {
+                  solutionId_userId: {
+                    userId: ctx.session.user.id,
+                    solutionId: input.id,
+                  },
+                },
+                data: {
+                  voteType: 1,
+                },
+              },
+            },
+          },
+        });
+      }
+
+      return ctx.prisma.solution.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          voteValue: {
+            increment: 1,
+          },
+          votes: {
+            create: {
+              userId: ctx.session.user.id,
+              voteType: 1,
+            },
+          },
+        },
+      });
+    }),
+
+  downvote: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const voteExist = await ctx.prisma.vote.findUnique({
+        where: {
+          solutionId_userId: {
+            userId: ctx.session.user.id,
+            solutionId: input.id,
+          },
+        },
+      });
+
+      if (voteExist) {
+        if (voteExist.voteType === -1) {
+          return ctx.prisma.solution.update({
+            where: {
+              id: input.id,
+            },
+            data: {
+              voteValue: {
+                increment: 1,
+              },
+              votes: {
+                delete: {
+                  solutionId_userId: {
+                    userId: ctx.session.user.id,
+                    solutionId: input.id,
+                  },
+                },
+              },
+            },
+          });
+        } else {
+          return ctx.prisma.solution.update({
+            where: {
+              id: input.id,
+            },
+            data: {
+              voteValue: {
+                decrement: 2,
+              },
+              votes: {
+                update: {
+                  where: {
+                    solutionId_userId: {
+                      userId: ctx.session.user.id,
+                      solutionId: input.id,
+                    },
+                  },
+                  data: {
+                    voteType: -1,
+                  },
+                },
+              },
+            },
+          });
+        }
+      }
+
+      return ctx.prisma.solution.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          voteValue: {
+            decrement: 1,
+          },
+          votes: {
+            create: {
+              userId: ctx.session.user.id,
+              voteType: -1,
+            },
+          },
+        },
+      });
+    }),
+
+  // user has voted on the solution
+  voteValueForUser: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      if (!ctx.session?.user)
+        return {
+          voteValue: 0,
+        };
+      const voteExist = await ctx.prisma.vote.findUnique({
+        where: {
+          solutionId_userId: {
+            userId: ctx.session.user.id,
+            solutionId: input.id,
+          },
+        },
+      });
+      return {
+        voteValue: voteExist?.voteType || 0,
+      };
     }),
 });

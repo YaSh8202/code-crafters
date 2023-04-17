@@ -2,25 +2,57 @@ import { type GetStaticProps } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import { Fa6SolidArrowUpRightFromSquare, Upvote } from "~/components/Icones";
+import {
+  Downvote,
+  Fa6SolidArrowUpRightFromSquare,
+  FilledDownvote,
+  FilledUpvote,
+  Upvote,
+} from "~/components/Icones";
 import { prisma } from "~/server/db";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import { api } from "~/utils/api";
 import { timeAgo } from "~/utils/helpers";
 
 const SolutionPage = ({ id }: { id: string }) => {
-  const { data: solution } = api.solution.getById.useQuery(
-    { id: id || "" },
-    {
-      onError: (err) => {
-        console.log("error", err);
-      },
-    }
-  );
-  if (!solution) return <div>loading...</div>;
-  const image = solution.challenge.imagesURL[0];
+  const { data: solution, refetch: refetchSolution } =
+    api.solution.getById.useQuery(
+      { id: id || "" },
+      {
+        onError: (err) => {
+          console.log("error", err);
+        },
+      }
+    );
+  const mutateUpvote = api.solution.upvote.useMutation({
+    onSuccess: async () => {
+      await Promise.all([await refetch(), await refetchSolution()]);
+      // await refetch();
+    },
+  });
+  const mutateDownvote = api.solution.downvote.useMutation({
+    onSuccess: async () => {
+      await Promise.all([await refetch(), await refetchSolution()]);
+    },
+  });
+  const { data: vote, refetch } = api.solution.voteValueForUser.useQuery({
+    id,
+  });
 
+  if (!solution) return <div>loading...</div>;
+
+  const image = solution.image || solution.challenge.imagesURL[0];
   const title = `Code Crafters | ${solution.title || ""}`;
+
+  const upvoteHandler = async () => {
+    mutateUpvote.mutate({ id });
+    await refetch();
+  };
+
+  const downvoteHandler = () => {
+    mutateDownvote.mutate({ id });
+  };
+
   return (
     <>
       <Head>
@@ -32,10 +64,35 @@ const SolutionPage = ({ id }: { id: string }) => {
           style={{
             backgroundImage: `url(${image || ""})`,
           }}
-          className="relative left-[calc(-50vw+50%)] w-screen bg-gray-900/80 bg-cover  bg-center bg-no-repeat px-4 bg-blend-multiply "
+          className="relative left-[calc(-50vw+50%)] w-screen bg-gray-900/80 bg-cover  bg-center bg-no-repeat px-4 bg-blend-multiply  "
         >
-          <div className=" mx-auto  max-w-6xl  py-8 text-gray-100 ">
-            <div className="mx-auto flex max-w-4xl flex-col items-center py-12 ">
+          <div className=" mx-auto  max-w-6xl  py-8 text-gray-100  ">
+            <div className="relative mx-auto flex max-w-4xl flex-col items-center py-12 ">
+              <div className="absolute left-0 flex flex-col items-center space-y-1 text-xl duration-100 ">
+                <button
+                  disabled={mutateUpvote.status === "loading"}
+                  onClick={() => void upvoteHandler()}
+                  className="group hover:text-green-400 disabled:text-green-300 "
+                >
+                  {vote?.voteValue === 1 ? (
+                    <FilledUpvote className="text-green-500 group-hover:text-green-400 " />
+                  ) : (
+                    <Upvote />
+                  )}
+                </button>
+                <p>{solution.voteValue}</p>
+                <button
+                  disabled={mutateDownvote.status === "loading"}
+                  onClick={() => void downvoteHandler()}
+                  className="group  "
+                >
+                  {vote?.voteValue === -1 ? (
+                    <FilledDownvote className=" text-red-400 " />
+                  ) : (
+                    <Downvote className=" group-hover:text-red-400 " />
+                  )}
+                </button>
+              </div>
               <p>Submitted about {timeAgo(solution.createdAt)}</p>
               <h1 className="my-3 text-3xl font-semibold tracking-wider ">
                 {solution.title}
@@ -90,10 +147,10 @@ const SolutionPage = ({ id }: { id: string }) => {
                 </Link>
               </div>
               <div className="flex flex-row items-center space-x-3">
-                <button className="flex items-center gap-2  rounded-full bg-gray-100 px-5 py-2 text-lg font-semibold uppercase text-gray-800 duration-150 hover:brightness-90 ">
+                {/* <button className="flex items-center gap-2  rounded-full bg-gray-100 px-5 py-2 text-lg font-semibold uppercase text-gray-800 duration-150 hover:brightness-90 ">
                   <Upvote />
-                  {solution._count.likes}
-                </button>
+                  {solution.voteValue}
+                </button> */}
               </div>
             </div>
           </div>
@@ -105,6 +162,19 @@ const SolutionPage = ({ id }: { id: string }) => {
           difficulty={solution.challenge.difficulty}
           type={solution.challenge.type}
         />
+
+        {solution.image && (
+          <div className="my-12 flex w-full ">
+            <div className="mx-auto ">
+              <Image
+                src={solution.image}
+                width={1000}
+                height={600}
+                alt={"solutin image"}
+              />
+            </div>
+          </div>
+        )}
       </main>
     </>
   );
@@ -165,7 +235,7 @@ const Challenge = ({
       <div className="flex items-center">
         {image && (
           <Image
-            className={"mr-3 h-24 w-36"}
+            className={"mr-3 hidden h-24 w-36 md:block "}
             src={image}
             width={150}
             height={100}

@@ -45,7 +45,8 @@ function ChallengeCard({
       console.log(error);
     },
   });
-  const { data: isStarred, refetch: refetchIsStarred } = api.challenge.isStarred.useQuery({ slug });
+  const { data: isStarred, refetch: refetchIsStarred } =
+    api.challenge.isStarred.useQuery({ slug });
 
   const handleStar = async () => {
     await toggleStar.mutateAsync({ slug });
@@ -65,10 +66,12 @@ function ChallengeCard({
         </Link>
         <button
           onClick={() => void handleStar()}
-          className={`absolute right-3 top-3 flex items-center gap-1  rounded-full border bg-gray-100 px-4 py-2 font-semibold uppercase duration-150 hover:brightness-90 ${isStarred? "text-blue-500":"text-gray-700" } `}
+          className={`absolute right-3 top-3 flex items-center gap-1 rounded-xl border bg-gray-100 px-3 py-2 font-semibold uppercase shadow duration-150 hover:text-blue-400 ${
+            isStarred ? "text-blue-500" : "text-gray-700"
+          } `}
         >
           {isStarred ? (
-            <StarFilled color={"#3b82f6"} fontSize={20} />
+            <StarFilled fontSize={20} />
           ) : (
             <StarOutline fontSize={20} />
           )}

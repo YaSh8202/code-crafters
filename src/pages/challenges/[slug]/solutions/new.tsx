@@ -1,4 +1,4 @@
-import { type NextPage } from "next";
+import { type InferGetServerSidePropsType, type GetStaticProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
@@ -50,13 +50,17 @@ const tagsOptions = [
   "React Query",
   "React Hook Form",
   "Redis",
+  "PostgreSQL",
+  "MySQL",
+  "Vue",
+  "Svelte",
 ];
 const MDEditor = dynamic(
   () => import("@uiw/react-md-editor").then((mod) => mod.default),
   { ssr: false }
 );
 
-const NewSolutionPage: NextPage = () => {
+const NewSolutionPage = ({ slug }: InferGetServerSidePropsType<typeof getStaticProps>) => {
   const {
     register,
     handleSubmit,
@@ -66,13 +70,9 @@ const NewSolutionPage: NextPage = () => {
   const [desc, setDesc] = useState<string>("");
   const router = useRouter();
   const [showImageError, setShowImageError] = useState(false);
-  const { slug } = router.query;
-  const { data: challengeId } = api.challenge.getChallengeIdBySlug.useQuery({
-    slug: slug as string,
-  });
   const createNewSolution = api.solution.create.useMutation({
     onSuccess: () => {
-      void router.push(`/challenges/${slug as string}/solutions`);
+      void router.push(`/challenges/${slug}/solutions`);
     },
   });
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
@@ -86,7 +86,7 @@ const NewSolutionPage: NextPage = () => {
   });
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     console.log(data);
-    if (!challengeId?.id) {
+    if (!slug) {
       return;
     }
     if (!acceptedFiles[0]) {
@@ -95,15 +95,15 @@ const NewSolutionPage: NextPage = () => {
     }
     const reader = new FileReader();
     reader.readAsDataURL(acceptedFiles[0]);
-    reader.onloadend =  () => {
-    console.log("url",reader.result)
+    reader.onloadend = () => {
+      console.log("url", reader.result);
       createNewSolution.mutate({
         repoURL: data.repoURL,
         liveURL: data.liveURL,
         tags: tags,
         description: desc,
         title: data.title,
-        challengeId: challengeId.id,
+        slug: slug,
         image: reader.result as string,
       });
     };
@@ -256,6 +256,21 @@ const NewSolutionPage: NextPage = () => {
       </main>
     </>
   );
+};
+
+export const getStaticProps: GetStaticProps<{ slug: string }> = (context) => {
+  // const { slug } = context.params;
+  const slug = context.params?.slug;
+  if (typeof slug !== "string") {
+    return {
+      notFound: true,
+    };
+  }
+  return {
+    props: {
+      slug,
+    },
+  };
 };
 
 export default NewSolutionPage;

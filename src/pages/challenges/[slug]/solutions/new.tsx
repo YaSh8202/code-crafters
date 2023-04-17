@@ -1,4 +1,8 @@
-import { type InferGetServerSidePropsType, type GetStaticProps } from "next";
+import {
+  type InferGetServerSidePropsType,
+  type GetStaticProps,
+  type GetStaticPaths,
+} from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
@@ -60,7 +64,9 @@ const MDEditor = dynamic(
   { ssr: false }
 );
 
-const NewSolutionPage = ({ slug }: InferGetServerSidePropsType<typeof getStaticProps>) => {
+const NewSolutionPage = ({
+  slug,
+}: InferGetServerSidePropsType<typeof getStaticProps>) => {
   const {
     register,
     handleSubmit,
@@ -256,6 +262,13 @@ const NewSolutionPage = ({ slug }: InferGetServerSidePropsType<typeof getStaticP
       </main>
     </>
   );
+};
+
+export const getStaticPaths: GetStaticPaths =  () => {
+  return {
+    paths: [],
+    fallback: "blocking",
+  };
 };
 
 export const getStaticProps: GetStaticProps<{ slug: string }> = (context) => {

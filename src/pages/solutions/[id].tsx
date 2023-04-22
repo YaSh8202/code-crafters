@@ -13,6 +13,13 @@ import { prisma } from "~/server/db";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import { api } from "~/utils/api";
 import { timeAgo } from "~/utils/helpers";
+import dynamic from "next/dynamic";
+import Comments from "~/components/Comments";
+
+const MDEditor = dynamic(
+  () => import("@uiw/react-md-editor").then((mod) => mod.default.Markdown),
+  { ssr: false }
+);
 
 const SolutionPage = ({ id }: { id: string }) => {
   const { data: solution, refetch: refetchSolution } =
@@ -164,17 +171,35 @@ const SolutionPage = ({ id }: { id: string }) => {
         />
 
         {solution.image && (
-          <div className="my-12 flex w-full ">
+          <div className="my-12 flex w-full max-w-5xl mx-auto ">
             <div className="mx-auto ">
               <Image
                 src={solution.image}
-                width={1000}
+                width={1024}
                 height={600}
                 alt={"solutin image"}
               />
             </div>
           </div>
         )}
+        {solution.description && (
+          <section
+            data-color-mode="light"
+            className="mx-auto prose border p-6 mt-8 col-span-2 max-w-5xl rounded-xl  bg-white  "
+          >
+            <h3>Description</h3>
+            <MDEditor
+              style={
+                {
+                  // borderRadius: "0.5rem",
+                }
+              }
+              // className="  p-6 "
+              source={solution.description}
+            />
+          </section>
+        )}
+        <Comments id={solution.id} />
       </main>
     </>
   );

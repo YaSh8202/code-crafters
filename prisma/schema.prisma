@@ -117,25 +117,30 @@ model Solution {
 }
 
 model Comment {
-    id          String   @id @default(cuid())
-    text        String
-    solution    Solution @relation(fields: [solutionId], references: [id])
-    solutionId String
-    user        User     @relation(fields: [userId], references: [id])
-    userId     String
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
+    id              String   @id @default(cuid())
+    text            String
+    solution        Solution @relation(fields: [solutionId], references: [id])
+    solutionId      String
+    parentComment   Comment? @relation("ParentComment", fields: [parentCommentId], references: [id])
+    parentCommentId String?
+
+    user      User      @relation(fields: [userId], references: [id])
+    userId    String
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    Comment   Comment[] @relation("ParentComment")
 }
 
 model Vote {
-    id          String   @id @default(cuid())
-    solution    Solution @relation(fields: [solutionId], references: [id])
+    id         String   @id @default(cuid())
+    solution   Solution @relation(fields: [solutionId], references: [id])
     solutionId String
-    user        User     @relation(fields: [userId], references: [id])
+    user       User     @relation(fields: [userId], references: [id])
     userId     String
-    voteType    Int      @default(1)
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
+    voteType   Int      @default(1)
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
     @@unique([solutionId, userId])
 }
 

@@ -219,6 +219,9 @@ const NewChallengePage: NextPage = () => {
                 }}
                 preview="edit"
                 enableScroll
+                previewOptions={{
+                  className: "prose",
+                }}
                 extraCommands={[codeEdit, codePreview, codeLive]}
               />
             </section>

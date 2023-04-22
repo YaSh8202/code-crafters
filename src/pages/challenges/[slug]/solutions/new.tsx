@@ -249,6 +249,9 @@ const NewSolutionPage = ({
               preview="edit"
               enableScroll
               extraCommands={[codeEdit, codePreview, codeLive]}
+              previewOptions={{
+                className: "prose",
+              }}
             />
           </div>
           <button

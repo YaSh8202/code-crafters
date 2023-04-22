@@ -72,6 +72,7 @@ export const SolutionRouter = createTRPCRouter({
         tags: true,
         createdAt: true,
         image: true,
+        voteValue: true,
         _count: {
           select: {
             comments: true,
@@ -328,5 +329,54 @@ export const SolutionRouter = createTRPCRouter({
       return {
         voteValue: voteExist?.voteType || 0,
       };
+    }),
+
+  getComments: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(({ ctx, input }) => {
+      return ctx.prisma.comment.findMany({
+        where: {
+          solutionId: input.id,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        select:{
+          id: true,
+          text: true,
+          createdAt: true,
+          user: {
+            select: {
+              username: true,
+              image : true,
+              name: true,
+            }
+          },
+          parentCommentId: true,
+        }
+      });
+    }),
+
+  createComment: protectedProcedure
+    .input(
+      z.object({
+        solId: z.string(),
+        text: z.string(),
+        parentCommentId: z.string().optional(),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.comment.create({
+        data: {
+          text: input.text,
+          parentCommentId: input.parentCommentId,
+          userId: ctx.session.user.id,
+          solutionId: input.solId,
+        },
+      });
     }),
 });

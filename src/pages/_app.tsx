@@ -5,7 +5,6 @@ import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import Navbar from "~/components/Navbar";
 import Footer from "~/components/Footer";
-import PageHeader from "~/components/PageHeader";
 import { Barlow } from "next/font/google";
 
 const barlow = Barlow({
@@ -21,8 +20,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <main data-mode="light" className={barlow.className}>
       <SessionProvider session={session}>
         <Navbar />
-        <PageHeader />
-        <div className="mx-auto flex min-h-screen w-[min(100%-2rem,1400px)] flex-col ">
+        <div className="mx-auto flex min-h-screen  flex-col ">
           <div className=" flex-1">
             <Component {...pageProps} />
           </div>

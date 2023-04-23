@@ -11,6 +11,7 @@ import {
   codeEdit,
 } from "@uiw/react-md-editor/lib/commands";
 import { CommentIcon } from "./Icones";
+import Link from "next/link";
 
 type CommentType = RouterOutputs["solution"]["getComments"][0];
 
@@ -18,6 +19,12 @@ const MDEditor = dynamic(
   () => import("@uiw/react-md-editor").then((mod) => mod.default),
   { ssr: false }
 );
+const MDPreviewer = dynamic(
+  () => import("@uiw/react-md-editor").then((mod) => mod.default.Markdown),
+  { ssr: false }
+);
+
+
 function Comments({ id }: { id: string }) {
   const {
     data: comments,
@@ -99,6 +106,7 @@ function Comment({
         `}
       />
       <div className="relative flex flex-row items-center gap-2 text-sm ">
+        <Link href={`/profile/${comment.user.username}`} >
         <Image
           ref={avatarRef}
           src={comment.user.image}
@@ -107,12 +115,16 @@ function Comment({
           alt={"user image"}
           className="rounded-full"
         />
-        <p className="font-semibold">{comment.user.username}</p>
+        </Link>
+        <Link href={`/profile/${comment.user.username}`} >
+        <p className="font-semibold hover:underline ">{comment.user.username}</p>
+        </Link>
         <p className="">{timeAgo(comment.createdAt)}</p>
       </div>
 
-      <div className="ml-8">
-        <p className=" text-lg  ">{comment.text}</p>
+      <div data-color-mode="light" className="ml-8 ">
+        {/* <p className=" text-lg  ">{comment.text}</p> */}
+        <MDPreviewer source={comment.text} className="" />
         <button
           onClick={replyHandler}
           type="button"
@@ -183,7 +195,7 @@ function CommentForm({
         enableScroll
         extraCommands={[codeEdit, codePreview, codeLive]}
         previewOptions={{
-          className: "prose",
+          // className: "prose",
         }}
       />
       <button

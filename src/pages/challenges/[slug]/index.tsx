@@ -27,10 +27,10 @@ const ChallengePage = (props: { slug: string }) => {
       <Head>
         <title>{challenge.title}</title>
       </Head>
-      <main className="px-32 pt-8">
+      <main className=" max-w-7xl mx-auto pt-8">
         <div className="grid grid-cols-2 gap-6 ">
-          <section className=" col-span-2 flex flex-row space-x-6 rounded-xl border bg-white p-6 ">
-            <div className="my-auto flex flex-1 flex-col space-y-4">
+          <section className=" col-span-2 flex flex-col-reverse md:flex-row space-y-4 md:space-x-6 rounded-xl border bg-white p-6 ">
+            <div className="mt-2 md:my-auto flex md:flex-1 flex-col space-y-4">
               <div className="flex flex-row items-center justify-between">
                 <p className="font-medium uppercase text-green-500">
                   {challenge.type}
@@ -44,9 +44,7 @@ const ChallengePage = (props: { slug: string }) => {
               {status === "authenticated" && (
                 <Link
                   href={`/challenges/${slug}/solutions/new`}
-                  className={`btn-primary btn w-48 ${
-                    status === "authenticated" ? "" : "btn-disabled"
-                  } `}
+                  className={`btn-primary btn w-48 `}
                 >
                   Start Challenge
                 </Link>

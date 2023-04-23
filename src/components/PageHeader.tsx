@@ -12,7 +12,12 @@ function getPageHeader(path: string): string {
   return header.replace(/-/g, " ");
 }
 
-function PageHeader() {
+type Props = {
+  pageTitle?: string;
+  children?: React.ReactNode;
+};
+
+function PageHeader({ pageTitle, children }: Props) {
   const router = useRouter();
 
   return (
@@ -20,9 +25,10 @@ function PageHeader() {
       <div className="mx-auto flex h-12 w-[min(100%-2rem,1400px)] items-center justify-between px-2 md:px-4 ">
         <div className="flex h-full items-center border-x px-4 ">
           <h3 className="text-base font-semibold uppercase tracking-wide">
-            {getPageHeader(router.asPath)}
+            {pageTitle || getPageHeader(router.asPath)}
           </h3>
         </div>
+        {<div className="flex h-full items-center  ">{children}</div>}
       </div>
     </nav>
   );

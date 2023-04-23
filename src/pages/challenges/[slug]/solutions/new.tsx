@@ -91,7 +91,6 @@ const NewSolutionPage = ({
     maxSize: 5000000, // 5MB
   });
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log(data);
     if (!slug) {
       return;
     }
@@ -102,7 +101,6 @@ const NewSolutionPage = ({
     const reader = new FileReader();
     reader.readAsDataURL(acceptedFiles[0]);
     reader.onloadend = () => {
-      console.log("url", reader.result);
       createNewSolution.mutate({
         repoURL: data.repoURL,
         liveURL: data.liveURL,

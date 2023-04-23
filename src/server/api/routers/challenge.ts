@@ -19,6 +19,7 @@ export const challengeRouter = createTRPCRouter({
         imagesURL: true,
         difficulty: true,
         slug: true,
+        createdAt: true,
         _count: {
           select: {
             stars: true,
@@ -49,7 +50,6 @@ export const challengeRouter = createTRPCRouter({
         input.difficulty,
         input.briefDesc
       );
-      console.log("shortDesc", shortDesc);
 
       return ctx.prisma.challenge.create({
         data: {
@@ -70,6 +70,21 @@ export const challengeRouter = createTRPCRouter({
     return ctx.prisma.challenge.findMany({
       where: {
         userId: ctx.session.user.id,
+      },
+      select: {
+        id: true,
+        title: true,
+        type: true,
+        shortDesc: true,
+        imagesURL: true,
+        difficulty: true,
+        slug: true,
+        createdAt: true,
+        _count: {
+          select: {
+            stars: true,
+          },
+        },
       },
     });
   }),
@@ -158,8 +173,7 @@ export const challengeRouter = createTRPCRouter({
   isStarred: publicProcedure
     .input(z.object({ slug: z.string() }))
     .query(async ({ input, ctx }) => {
-
-      if(!ctx.session?.user) return false;
+      if (!ctx.session?.user) return false;
 
       const challenge = await ctx.prisma.challenge.findUnique({
         where: {

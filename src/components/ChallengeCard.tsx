@@ -1,4 +1,3 @@
-import { type Difficulty, type ChallengeType } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -13,32 +12,27 @@ import type {
 type AllChallenges = RouterOutputs["challenge"]["getAll"];
 
 type Props = {
-  title: string;
-  description: string;
-  image?: string;
-  type: ChallengeType;
-  slug: string;
-  difficulty: Difficulty;
-  starCount: number;
-  refetch: <TPageData>(
+  challenge: AllChallenges[number];
+  refetch?: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<QueryObserverResult<AllChallenges, unknown>>;
 };
 
 function ChallengeCard({
-  slug,
-  title,
-  description,
-  image,
-  type,
-  difficulty,
-  starCount,
+  challenge: {
+    title,
+    shortDesc: description,
+    imagesURL: [image],
+    type,
+    slug,
+    difficulty,
+    _count: { stars: starCount },
+  },
   refetch,
 }: Props) {
   const toggleStar = api.challenge.toggleStar.useMutation({
-    onSuccess: (data) => {
-      console.log(data);
-      void refetch();
+    onSuccess: () => {
+      void refetch?.();
       void refetchIsStarred();
     },
     onError: (error) => {
@@ -81,7 +75,7 @@ function ChallengeCard({
       <div className="card-body">
         <Link
           href={`/challenges/${slug}`}
-          className="card-title text-2xl hover:link  "
+          className="card-title text-2xl hover:link line-clamp-2 h-[4rem] "
         >
           {title}
         </Link>
@@ -91,7 +85,7 @@ function ChallengeCard({
             {difficulty}
           </span>
         </div>
-        <p>{description}</p>
+        <p className='line-clamp-4' >{description}</p>
       </div>
     </div>
   );

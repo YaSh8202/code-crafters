@@ -96,7 +96,7 @@ const ChallengesPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Code Crafters</title>
+        <title >Code Crafters</title>
       </Head>
       <PageHeader pageTitle={"Challenges"}>
         <div className="flex h-full">
@@ -117,7 +117,7 @@ const ChallengesPage: NextPage = () => {
         </div>
       </PageHeader>
       <main className=" mx-auto mt-4 max-w-7xl  ">
-        <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-8">
+        <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-8 mt-32">
           {filteredChallenges?.map((challenge) => (
             <ChallengeCard
               key={challenge.id}

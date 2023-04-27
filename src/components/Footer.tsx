@@ -7,7 +7,7 @@ function Footer() {
       style={{
         clipPath: "inset(0 -100vmax)",
       }}
-      className="footer mt-8 items-center justify-self-end bg-neutral p-4 text-neutral-content shadow-[0_0_0_100vmax] shadow-neutral"
+      className="footer mt-8 items-center justify-self-end bg-neutral p-4 text-neutral-content shadow-[0_0_0_100vmax] shadow-neutral max-[900px]:flex max-[900px]:justify-around"
     >
       <div className="grid-flow-col items-center">
         <svg

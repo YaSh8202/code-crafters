@@ -6,14 +6,15 @@ import { MdiGithub } from "./Icones";
 function Navbar() {
   const { data: session, status } = useSession();
   return (
-    <div className="navbar mx-auto w-[min(100%-2rem,1400px)] px-0">
+    // <div className="navbar mx-auto w-[min(100%-2rem,1400px)] px-0">
+    <div className="navbar mx-auto  px-0 -mt-1 bg-gray-50 w-full z-30 fixed">
       <div className="flex-1">
         <Link href="/" className="btn-ghost btn text-xl normal-case">
           Code Crafters
         </Link>
       </div>
-      <div className="flex-none">
-        <ul className="menu menu-horizontal px-1">
+      <div className="flex-none max-[800]:w-[40%]">
+        <ul className="menu menu-horizontal w-full px-1 flex justify-around">
           <li className="hidden md:block">
             <Link href="/challenges" className="">
               CHALLENGES
@@ -53,12 +54,12 @@ function Navbar() {
                     className="dropdown-content menu rounded-box menu-compact w-40 bg-base-100 p-2 shadow"
                   >
                     <li>
-                      <Link href={`/profile/${session.user.username || ""}`}>
+                      <Link href={`/profile/${session.user.username || ""}`} className="w-full justify-center">
                         Profile
                       </Link>
                     </li>
                     <li>
-                      <button onClick={() => void signOut()}>Sign out</button>
+                      <button onClick={() => void signOut()} className="w-full justify-center">Sign out</button>
                     </li>
                   </ul>
                 </div>

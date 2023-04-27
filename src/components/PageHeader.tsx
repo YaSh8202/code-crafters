@@ -21,7 +21,7 @@ function PageHeader({ pageTitle, children }: Props) {
   const router = useRouter();
 
   return (
-    <nav className=" w-full border-y ">
+    <nav className=" w-full border-y bg-white fixed mt-14 z-20" >
       <div className="mx-auto flex h-12 w-[min(100%-2rem,1400px)] items-center justify-between px-2 md:px-4 ">
         <div className="flex h-full items-center border-x px-4 ">
           <h3 className="text-base font-semibold uppercase tracking-wide">

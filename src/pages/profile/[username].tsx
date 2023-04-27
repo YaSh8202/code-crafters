@@ -31,7 +31,7 @@ const ProfilePage: NextPage<Props> = ({ username }: Props) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <PageHeader pageTitle="Profile" />
-      <main>
+      <main className="mt-28">
         <section
           style={{
             clipPath: "inset(0 -100vmax)",
@@ -54,7 +54,7 @@ const ProfilePage: NextPage<Props> = ({ username }: Props) => {
               </h3>
               <p className="  ">@{user.username}</p>
             </div>
-            <Link target="_blank" href={(user.githubURL as string) || ""}>
+            <Link target="_blank" href={(user.githubURL as string) || ""} className="flex  justify-center  md:justify-start">
               {user.githubURL && <MdiGithub className="h-8 w-8" />}
             </Link>
           </div>

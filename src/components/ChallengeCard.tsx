@@ -3,19 +3,12 @@ import Link from "next/link";
 import React from "react";
 import { StarFilled, StarOutline } from "./Icones";
 import { type RouterOutputs, api } from "~/utils/api";
-import type {
-  QueryObserverResult,
-  RefetchOptions,
-  RefetchQueryFilters,
-} from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 
 type AllChallenges = RouterOutputs["challenge"]["getAll"];
 
 type Props = {
   challenge: AllChallenges[number];
-  refetch?: <TPageData>(
-    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
-  ) => Promise<QueryObserverResult<AllChallenges, unknown>>;
 };
 
 function ChallengeCard({
@@ -26,24 +19,57 @@ function ChallengeCard({
     type,
     slug,
     difficulty,
-    _count: { stars: starCount },
   },
-  refetch,
 }: Props) {
+  const utilis = api.useContext();
+  const { status } = useSession();
+
   const toggleStar = api.challenge.toggleStar.useMutation({
-    onSuccess: () => {
-      void refetch?.();
-      void refetchIsStarred();
-    },
     onError: (error) => {
       console.log(error);
     },
-  });
-  const { data: isStarred, refetch: refetchIsStarred } =
-    api.challenge.isStarred.useQuery({ slug });
+    onMutate: async ({ slug }) => {
+      await utilis.challenge.isStarred.cancel({
+        slug,
+      });
+      const prevData = utilis.challenge.isStarred.getData({
+        slug,
+      });
+      console.log("prevData", prevData);
+      if (!prevData) {
+        return { prevData };
+      }
+      utilis.challenge.isStarred.setData(
+        {
+          slug,
+        },
+        (prevData) => {
+          if (!prevData) {
+            return {
+              isStarred: false,
+              stars: 0,
+            };
+          }
 
-  const handleStar = async () => {
-    await toggleStar.mutateAsync({ slug });
+          return {
+            ...prevData,
+            isStarred: !prevData.isStarred,
+            stars: prevData.isStarred ? prevData.stars - 1 : prevData.stars + 1,
+          };
+        }
+      );
+      return { prevData };
+    },
+  });
+  const { data } = api.challenge.isStarred.useQuery({
+    slug,
+  });
+
+  const isStarred = data?.isStarred || false;
+  const starCount = data?.stars || 0;
+
+  const handleStar = () => {
+    toggleStar.mutate({ slug });
   };
 
   return (
@@ -58,24 +84,26 @@ function ChallengeCard({
             className="h-[256px] object-cover transition-all duration-300 hover:scale-105"
           />
         </Link>
-        <button
-          onClick={() => void handleStar()}
-          className={`absolute right-3 top-3 flex items-center gap-1 rounded-xl border bg-gray-100 px-3 py-2 font-semibold uppercase shadow duration-150 hover:text-blue-400 ${
-            isStarred ? "text-blue-500" : "text-gray-700"
-          } `}
-        >
-          {isStarred ? (
-            <StarFilled fontSize={20} />
-          ) : (
-            <StarOutline fontSize={20} />
-          )}
-          {starCount}
-        </button>
+        {status === "authenticated" && (
+          <button
+            onClick={() => void handleStar()}
+            className={`absolute right-3 top-3 flex items-center gap-1 rounded-xl border bg-gray-100 px-3 py-2 font-semibold uppercase shadow duration-150 hover:text-blue-400 ${
+              isStarred ? "text-blue-500" : "text-gray-700"
+            } `}
+          >
+            {isStarred ? (
+              <StarFilled fontSize={20} />
+            ) : (
+              <StarOutline fontSize={20} />
+            )}
+            {starCount}
+          </button>
+        )}
       </figure>
       <div className="card-body">
         <Link
           href={`/challenges/${slug}`}
-          className="card-title text-2xl hover:link line-clamp-2 h-[4rem] "
+          className="card-title line-clamp-2 h-[4rem] text-2xl hover:link "
         >
           {title}
         </Link>
@@ -85,7 +113,7 @@ function ChallengeCard({
             {difficulty}
           </span>
         </div>
-        <p className='line-clamp-4' >{description}</p>
+        <p className="line-clamp-4">{description}</p>
       </div>
     </div>
   );

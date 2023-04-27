@@ -307,16 +307,26 @@ export const SolutionRouter = createTRPCRouter({
     }),
 
   // user has voted on the solution
-  voteValueForUser: publicProcedure
+  getVotes: publicProcedure
     .input(
       z.object({
         id: z.string(),
       })
     )
     .query(async ({ ctx, input }) => {
+      const solution = await ctx.prisma.solution.findUnique({
+        where: {
+          id: input.id,
+        },
+        select: {
+          voteValue: true,
+        },
+      });
+      const voteCount = solution?.voteValue || 0;
       if (!ctx.session?.user)
         return {
           voteValue: 0,
+          voteCount,
         };
       const voteExist = await ctx.prisma.vote.findUnique({
         where: {
@@ -326,8 +336,10 @@ export const SolutionRouter = createTRPCRouter({
           },
         },
       });
+
       return {
         voteValue: voteExist?.voteType || 0,
+        voteCount,
       };
     }),
 
@@ -345,19 +357,19 @@ export const SolutionRouter = createTRPCRouter({
         orderBy: {
           createdAt: "desc",
         },
-        select:{
+        select: {
           id: true,
           text: true,
           createdAt: true,
           user: {
             select: {
               username: true,
-              image : true,
+              image: true,
               name: true,
-            }
+            },
           },
           parentCommentId: true,
-        }
+        },
       });
     }),
 

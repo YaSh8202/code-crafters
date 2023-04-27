@@ -22,28 +22,90 @@ const MDEditor = dynamic(
 );
 
 const SolutionPage = ({ id }: { id: string }) => {
-  const { data: solution, refetch: refetchSolution } =
-    api.solution.getById.useQuery(
-      { id: id || "" },
-      {
-        onError: (err) => {
-          console.log("error", err);
-        },
-      }
-    );
+  const utilis = api.useContext();
+
+  const { data: solution } = api.solution.getById.useQuery(
+    { id: id || "" },
+    {
+      onError: (err) => {
+        console.log("error", err);
+      },
+    }
+  );
+  const { data: vote } = api.solution.getVotes.useQuery({
+    id,
+  });
   const mutateUpvote = api.solution.upvote.useMutation({
-    onSuccess: async () => {
-      await Promise.all([await refetch(), await refetchSolution()]);
-      // await refetch();
+    onMutate: async ({ id }) => {
+      await utilis.solution.getVotes.cancel({
+        id,
+      });
+      const prevData = utilis.solution.getVotes.getData({
+        id,
+      });
+      if (!prevData) {
+        return { prevData };
+      }
+      utilis.solution.getVotes.setData(
+        {
+          id,
+        },
+        (prevData) => {
+          if (!prevData) {
+            return {
+              voteCount: 0,
+              voteValue: 0,
+            };
+          }
+          return {
+            ...prevData,
+            voteCount:
+              prevData.voteValue === 1
+                ? prevData.voteCount - 1
+                : prevData.voteValue === -1
+                ? prevData.voteCount + 2
+                : prevData.voteCount + 1,
+            voteValue: prevData.voteValue === 1 ? 0 : 1,
+          };
+        }
+      );
     },
   });
   const mutateDownvote = api.solution.downvote.useMutation({
-    onSuccess: async () => {
-      await Promise.all([await refetch(), await refetchSolution()]);
+    onMutate: async ({ id }) => {
+      await utilis.solution.getVotes.cancel({
+        id,
+      });
+      const prevData = utilis.solution.getVotes.getData({
+        id,
+      });
+      if (!prevData) {
+        return { prevData };
+      }
+      utilis.solution.getVotes.setData(
+        {
+          id,
+        },
+        (prevData) => {
+          if (!prevData) {
+            return {
+              voteCount: 0,
+              voteValue: 0,
+            };
+          }
+          return {
+            ...prevData,
+            voteCount:
+              prevData.voteValue === -1
+                ? prevData.voteCount + 1
+                : prevData.voteValue === 1
+                ? prevData.voteCount - 2
+                : prevData.voteCount - 1,
+            voteValue: prevData.voteValue === -1 ? 0 : -1,
+          };
+        }
+      );
     },
-  });
-  const { data: vote, refetch } = api.solution.voteValueForUser.useQuery({
-    id,
   });
 
   if (!solution) return <div>loading...</div>;
@@ -51,9 +113,8 @@ const SolutionPage = ({ id }: { id: string }) => {
   const image = solution.image || solution.challenge.imagesURL[0];
   const title = `Code Crafters | ${solution.title || ""}`;
 
-  const upvoteHandler = async () => {
+  const upvoteHandler = () => {
     mutateUpvote.mutate({ id });
-    await refetch();
   };
 
   const downvoteHandler = () => {
@@ -75,31 +136,33 @@ const SolutionPage = ({ id }: { id: string }) => {
         >
           <div className=" mx-auto  max-w-6xl  py-8 text-gray-100  ">
             <div className="relative mx-auto flex max-w-4xl flex-col items-center py-12 ">
-              <div className="absolute left-0 flex flex-col items-center space-y-1 text-xl duration-100 ">
-                <button
-                  disabled={mutateUpvote.status === "loading"}
-                  onClick={() => void upvoteHandler()}
-                  className="group hover:text-green-400 disabled:text-green-300 "
-                >
-                  {vote?.voteValue === 1 ? (
-                    <FilledUpvote className="text-green-500 group-hover:text-green-400 " />
-                  ) : (
-                    <Upvote />
-                  )}
-                </button>
-                <p>{solution.voteValue}</p>
-                <button
-                  disabled={mutateDownvote.status === "loading"}
-                  onClick={() => void downvoteHandler()}
-                  className="group  "
-                >
-                  {vote?.voteValue === -1 ? (
-                    <FilledDownvote className=" text-red-400 " />
-                  ) : (
-                    <Downvote className=" group-hover:text-red-400 " />
-                  )}
-                </button>
-              </div>
+              {vote && (
+                <div className="absolute left-0 flex flex-col items-center space-y-1 text-xl duration-100 ">
+                  <button
+                    disabled={mutateUpvote.status === "loading"}
+                    onClick={() => void upvoteHandler()}
+                    className="group hover:text-green-400 disabled:text-green-300 "
+                  >
+                    {vote.voteValue === 1 ? (
+                      <FilledUpvote className="text-green-500 group-hover:text-green-400 " />
+                    ) : (
+                      <Upvote />
+                    )}
+                  </button>
+                  <p>{vote.voteCount}</p>
+                  <button
+                    disabled={mutateDownvote.status === "loading"}
+                    onClick={() => void downvoteHandler()}
+                    className="group  "
+                  >
+                    {vote.voteValue === -1 ? (
+                      <FilledDownvote className=" text-red-400 " />
+                    ) : (
+                      <Downvote className=" group-hover:text-red-400 " />
+                    )}
+                  </button>
+                </div>
+              )}
               <p>Submitted about {timeAgo(solution.createdAt)}</p>
               <h1 className="my-3 text-3xl font-semibold tracking-wider ">
                 {solution.title}
@@ -171,7 +234,7 @@ const SolutionPage = ({ id }: { id: string }) => {
         />
 
         {solution.image && (
-          <div className="my-12 flex w-full max-w-5xl mx-auto ">
+          <div className="mx-auto my-12 flex w-full max-w-5xl ">
             <div className="mx-auto ">
               <Image
                 src={solution.image}
@@ -185,7 +248,7 @@ const SolutionPage = ({ id }: { id: string }) => {
         {solution.description && (
           <section
             data-color-mode="light"
-            className="mx-auto prose border p-6 mt-8 col-span-2 max-w-5xl rounded-xl  bg-white  "
+            className="prose col-span-2 mx-auto mt-8 max-w-5xl rounded-xl border bg-white  p-6  "
           >
             <h3>Description</h3>
             <MDEditor

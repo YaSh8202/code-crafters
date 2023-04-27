@@ -173,13 +173,17 @@ export const challengeRouter = createTRPCRouter({
   isStarred: publicProcedure
     .input(z.object({ slug: z.string() }))
     .query(async ({ input, ctx }) => {
-      if (!ctx.session?.user) return false;
 
       const challenge = await ctx.prisma.challenge.findUnique({
         where: {
           slug: input.slug,
         },
         select: {
+          _count: {
+            select: {
+              stars: true,
+            },
+          },
           stars: {
             select: {
               id: true,
@@ -189,12 +193,24 @@ export const challengeRouter = createTRPCRouter({
       });
 
       if (!challenge) {
-        throw new Error("Challenge not found");
+        return {
+          isStarred: false,
+          stars: 0
+        }
       }
-      if (challenge.stars.find((user) => user.id === ctx.session?.user.id)) {
-        return true;
+      if (
+        ctx.session?.user &&
+        challenge.stars.find((user) => user.id === ctx.session?.user.id)
+      ) {
+        return {
+          isStarred: true,
+          stars: challenge._count.stars,
+        };
       }
-      return false;
+      return {
+        isStarred: false,
+        stars: challenge._count.stars,
+      };
     }),
 });
 

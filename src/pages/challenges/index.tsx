@@ -29,7 +29,7 @@ const difficultyValue = {
 };
 
 const ChallengesPage: NextPage = () => {
-  const { data: challenges, refetch } = api.challenge.getAll.useQuery();
+  const { data: challenges } = api.challenge.getAll.useQuery();
   const [filteredChallenges, setFilteredChallenges] = useState(challenges);
   const [selectedSortBy, setSelectedSortBy] =
     useState<keyof typeof SortByOptions>("MOST_RECENT");
@@ -122,7 +122,6 @@ const ChallengesPage: NextPage = () => {
             <ChallengeCard
               key={challenge.id}
               challenge={challenge}
-              refetch={refetch}
             />
           ))}
         </div>

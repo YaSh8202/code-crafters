@@ -12,6 +12,7 @@ import {
 } from "@uiw/react-md-editor/lib/commands";
 import { CommentIcon } from "./Icones";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 type CommentType = RouterOutputs["solution"]["getComments"][0];
 
@@ -24,13 +25,8 @@ const MDPreviewer = dynamic(
   { ssr: false }
 );
 
-
 function Comments({ id }: { id: string }) {
-  const {
-    data: comments,
-    isLoading,
-    refetch,
-  } = api.solution.getComments.useQuery({
+  const { data: comments, isLoading } = api.solution.getComments.useQuery({
     id,
   });
 
@@ -51,13 +47,13 @@ function Comments({ id }: { id: string }) {
     return <p>Loading...</p>;
   }
 
-  const refetchComments = () => {
-    void refetch();
-  };
+  if (comments.length === 0) {
+    return null;
+  }
 
   return (
     <div className=" mx-auto my-16 max-w-5xl ">
-      <CommentForm solId={id} refetchComments={refetchComments} />
+      <CommentForm solId={id} />
       <section className="mt-5 flex flex-col rounded-lg border bg-white p-5">
         {comments.map(
           (comment) =>
@@ -67,7 +63,6 @@ function Comments({ id }: { id: string }) {
                 comment={comment}
                 solutionId={id}
                 commentMap={commentMap}
-                refetchComments={refetchComments}
               />
             )
         )}
@@ -80,12 +75,10 @@ function Comment({
   comment,
   solutionId,
   commentMap,
-  refetchComments,
 }: {
   comment: CommentType;
   solutionId: string;
   commentMap: Map<string, CommentType[]>;
-  refetchComments: () => void;
 }) {
   const [showReplyForm, setShowReplyForm] = useState(false);
   const replyHandler = () => {
@@ -106,18 +99,20 @@ function Comment({
         `}
       />
       <div className="relative flex flex-row items-center gap-2 text-sm ">
-        <Link href={`/profile/${comment.user.username}`} >
-        <Image
-          ref={avatarRef}
-          src={comment.user.image}
-          width={28}
-          height={28}
-          alt={"user image"}
-          className="rounded-full"
-        />
+        <Link href={`/profile/${comment.user.username}`}>
+          <Image
+            ref={avatarRef}
+            src={comment.user.image}
+            width={28}
+            height={28}
+            alt={"user image"}
+            className="rounded-full"
+          />
         </Link>
-        <Link href={`/profile/${comment.user.username}`} >
-        <p className="font-semibold hover:underline ">{comment.user.username}</p>
+        <Link href={`/profile/${comment.user.username}`}>
+          <p className="font-semibold hover:underline ">
+            {comment.user.username}
+          </p>
         </Link>
         <p className="">{timeAgo(comment.createdAt)}</p>
       </div>
@@ -137,7 +132,6 @@ function Comment({
           <CommentForm
             solId={solutionId}
             parentid={comment.id}
-            refetchComments={refetchComments}
             onSubmit={() => void setShowReplyForm(false)}
           />
         )}
@@ -147,7 +141,6 @@ function Comment({
             comment={comment}
             solutionId={solutionId}
             commentMap={commentMap}
-            refetchComments={refetchComments}
           />
         ))}
       </div>
@@ -158,18 +151,59 @@ function Comment({
 function CommentForm({
   solId,
   parentid,
-  refetchComments,
   onSubmit,
 }: {
   solId: string;
   parentid?: string;
-  refetchComments: () => void;
   onSubmit?: () => void;
 }) {
+  const utilis = api.useContext();
   const [comment, setComment] = useState("");
+  const { data: session } = useSession();
   const newComment = api.solution.createComment.useMutation({
-    onSuccess: () => {
-      refetchComments();
+    onMutate: async ({ solId, text, parentCommentId }) => {
+      await utilis.solution.getComments.cancel({
+        id: solId,
+      });
+      const previousComments = utilis.solution.getComments.getData({
+        id: solId,
+      });
+      if (!previousComments) {
+        return {
+          previousComments: [],
+        };
+      }
+      utilis.solution.getComments.setData(
+        {
+          id: solId,
+        },
+        (prevData) => {
+          if (!prevData) {
+            return [];
+          }
+
+          return [
+            {
+              user: {
+                username: session?.user.username || "",
+                image: session?.user.image || "",
+                name: session?.user.name || "",
+              },
+              id: Math.random().toString(),
+              text: text,
+              createdAt: new Date(),
+              parentCommentId: parentCommentId || null,
+            },
+            ...prevData,
+          ];
+        }
+      );
+    },
+    onSettled: async (comment) => {
+      if (!comment) return;
+      await utilis.solution.getComments.refetch({
+        id: comment.solutionId,
+      });
     },
   });
 
@@ -194,9 +228,6 @@ function CommentForm({
         preview="edit"
         enableScroll
         extraCommands={[codeEdit, codePreview, codeLive]}
-        previewOptions={{
-          // className: "prose",
-        }}
       />
       <button
         onClick={handleSubmit}

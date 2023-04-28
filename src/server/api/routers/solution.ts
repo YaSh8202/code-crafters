@@ -68,7 +68,6 @@ export const SolutionRouter = createTRPCRouter({
       select: {
         id: true,
         title: true,
-        description: true,
         tags: true,
         createdAt: true,
         image: true,

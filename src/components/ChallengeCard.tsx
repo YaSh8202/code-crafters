@@ -35,7 +35,6 @@ function ChallengeCard({
       const prevData = utilis.challenge.isStarred.getData({
         slug,
       });
-      console.log("prevData", prevData);
       if (!prevData) {
         return { prevData };
       }
@@ -59,6 +58,13 @@ function ChallengeCard({
         }
       );
       return { prevData };
+    },
+    onSettled: async (newChallenge) => {
+      if(!newChallenge) return;
+      await utilis.challenge.isStarred.refetch({
+        slug,
+      });
+      
     },
   });
   const { data } = api.challenge.isStarred.useQuery({

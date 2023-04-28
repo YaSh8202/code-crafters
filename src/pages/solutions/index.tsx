@@ -1,9 +1,10 @@
-import type { NextPage } from "next";
+import type { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 import { api } from "~/utils/api";
 import SolutionCard from "../../components/SolutionCard";
 import PageHeader from "~/components/PageHeader";
 import LoadingSpinner from "~/components/LoadingSpinner";
+import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 
 const SolutionsPage: NextPage = () => {
   const { data: solutions } = api.solution.getAll.useQuery();
@@ -30,6 +31,17 @@ const SolutionsPage: NextPage = () => {
       </main>
     </>
   );
+};
+
+export const getStaticProps: GetStaticProps = async () => {
+  const ssg = generateSSGHelper();
+  await ssg.solution.getAll.prefetch();
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    },
+    revalidate: 10 * 60, // 10 minutes
+  };
 };
 
 export default SolutionsPage;

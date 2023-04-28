@@ -20,5 +20,5 @@ jobs:
           envkey_NEXT_GITHUB_CLIENT_SECRET: ${{ secrets.NEXT_GITHUB_CLIENT_SECRET }}
       - name: Install NPM dependencies
         run: pnpm install --no-frozen-lockfile
-      - name: Build project assets
-        run: pnpm build
+      - name: Run local server
+        run: pnpm dev

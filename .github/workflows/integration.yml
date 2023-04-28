@@ -18,7 +18,11 @@ jobs:
           envkey_NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
           envkey_NEXT_GITHUB_CLIENT_ID: ${{ secrets.NEXTAUTH_URL }}
           envkey_NEXT_GITHUB_CLIENT_SECRET: ${{ secrets.NEXT_GITHUB_CLIENT_SECRET }}
+          envkey_CLOUDINARY_NAME: ${{ secrets.CLOUDINARY_NAME }}
+          envkey_CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          envkey_CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          envkey_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       - name: Install NPM dependencies
         run: pnpm install --no-frozen-lockfile
-      - name: Run local server
-        run: pnpm dev
+      - name: Build project
+        run: pnpm build

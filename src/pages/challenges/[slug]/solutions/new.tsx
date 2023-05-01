@@ -19,6 +19,7 @@ import {
 } from "@uiw/react-md-editor/lib/commands";
 import { useDropzone } from "react-dropzone";
 import DropZoneInput from "~/components/DropZoneInput";
+import PageHeader from "~/components/PageHeader";
 
 type FormValues = {
   title: string;
@@ -117,6 +118,7 @@ const NewSolutionPage = ({
       <Head>
         <title>New Solution</title>
       </Head>
+      <PageHeader pageTitle="New Solution" />
       <main className="flex min-h-screen flex-col py-12 ">
         <form
           onSubmit={(e) => {

@@ -9,6 +9,7 @@ import "@uiw/react-markdown-preview/markdown.css";
 import { prisma } from "~/server/db";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import { useSession } from "next-auth/react";
+import PageHeader from "~/components/PageHeader";
 const MDEditor = dynamic(
   () => import("@uiw/react-md-editor").then((mod) => mod.default.Markdown),
   { ssr: false }
@@ -27,6 +28,7 @@ const ChallengePage = (props: { slug: string }) => {
       <Head>
         <title>{challenge.title}</title>
       </Head>
+      <PageHeader pageTitle={'challenge'} />
       <main className=" max-w-7xl mx-auto pt-8">
         <div className="grid grid-cols-2 gap-6 ">
           <section className=" col-span-2 flex flex-col-reverse md:flex-row space-y-4 md:space-x-6 rounded-xl border bg-white p-6 ">

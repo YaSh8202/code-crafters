@@ -16,19 +16,19 @@ function Navbar() {
       <div className="flex-none max-[800]:w-[40%]">
         <ul className="menu menu-horizontal w-full px-1 flex justify-around">
           <li className="hidden md:block">
-            <Link href="/challenges" className="">
-              CHALLENGES
+            <Link href="/challenges" className="font-medium">
+              Challenges
             </Link>
           </li>
           <li className="hidden md:block">
-            <Link href="/solutions" className="">
-              SOLUTIONS
+            <Link href="/solutions" className="font-medium">
+              Solutions
             </Link>
           </li>
           {session?.user && (
             <li className="hidden md:block">
-              <Link href="/new-challenge" className="">
-                Add Challenge
+              <Link href="/new-challenge" className="font-medium">
+                New Challenge
               </Link>
             </li>
           )}

@@ -35,7 +35,6 @@ function ChallengeCard({
       const prevData = utilis.challenge.isStarred.getData({
         slug,
       });
-      console.log("prevData", prevData);
       if (!prevData) {
         return { prevData };
       }
@@ -60,6 +59,13 @@ function ChallengeCard({
       );
       return { prevData };
     },
+    onSettled: async (newChallenge) => {
+      if(!newChallenge) return;
+      await utilis.challenge.isStarred.refetch({
+        slug,
+      });
+      
+    },
   });
   const { data } = api.challenge.isStarred.useQuery({
     slug,
@@ -73,7 +79,7 @@ function ChallengeCard({
   };
 
   return (
-    <div className="card max-w-[24rem] justify-self-center border bg-base-100  ">
+    <div className="card max-w-[24rem] mx-3 md:mx-0 justify-self-center border bg-base-100  ">
       <figure className="relative">
         <Link href={`/challenges/${slug}`}>
           <Image
@@ -103,7 +109,7 @@ function ChallengeCard({
       <div className="card-body">
         <Link
           href={`/challenges/${slug}`}
-          className="card-title line-clamp-2 h-[4rem] text-2xl hover:link "
+          className="card-title line-clamp-1 text-2xl hover:link "
         >
           {title}
         </Link>

@@ -5,7 +5,12 @@ import ChallengeCard from "~/components/ChallengeCard";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import PageHeader from "~/components/PageHeader";
 import { Menu, Transition } from "@headlessui/react";
-import { ChevronDownIcon, TickOutline } from "~/components/Icones";
+import {
+  ChevronDownIcon,
+  MaterialSymbolsFilterAltOutline,
+  MaterialSymbolsSort,
+  TickOutline,
+} from "~/components/Icones";
 import {
   type Dispatch,
   Fragment,
@@ -99,7 +104,7 @@ const ChallengesPage: NextPage = () => {
         <title >Code Crafters</title>
       </Head>
       <PageHeader pageTitle={"Challenges"}>
-        <div className="flex h-full">
+        <div className="flex h-full ">
           <div className="flex h-full items-center border-l px-4 ">
             <SortByMenu
               selected={selectedSortBy}
@@ -119,10 +124,7 @@ const ChallengesPage: NextPage = () => {
       <main className=" mx-auto mt-4 max-w-7xl  ">
         <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-8 mt-32">
           {filteredChallenges?.map((challenge) => (
-            <ChallengeCard
-              key={challenge.id}
-              challenge={challenge}
-            />
+            <ChallengeCard key={challenge.id} challenge={challenge} />
           ))}
         </div>
       </main>
@@ -155,11 +157,12 @@ const SortByMenu = ({
       <Menu as="div" className="relative z-20 inline-block text-left ">
         <div>
           <Menu.Button className="inline-flex w-full justify-center py-2 text-sm font-medium uppercase  text-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-700 focus-visible:ring-opacity-75">
-            Sort By
+            <p className="hidden sm:block">Sort By</p>
             <ChevronDownIcon
-              className="-mr-1 ml-2 h-5 w-5 text-gray-700 hover:text-violet-600"
+              className="-mr-1 ml-2 hidden h-5 w-5 text-gray-700 hover:text-violet-600 sm:block"
               aria-hidden="true"
             />
+            <MaterialSymbolsSort className="h-5 w-5 text-gray-700 hover:text-violet-600 sm:hidden" />
           </Menu.Button>
         </div>
         <Transition
@@ -216,12 +219,13 @@ const FilterBy = ({
     <div className="">
       <Menu as="div" className="relative z-20 inline-block text-left ">
         <div>
-          <Menu.Button className="inline-flex w-full justify-center py-2 text-sm font-medium uppercase  text-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-700 focus-visible:ring-opacity-75">
-            Filter By
+          <Menu.Button className="inline-flex w-full justify-center py-2 text-sm font-medium uppercase  text-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-700 focus-visible:ring-opacity-75 ">
+            <p className="hidden sm:block">Filter By</p>
             <ChevronDownIcon
-              className="-mr-1 ml-2 h-5 w-5 text-gray-700 hover:text-violet-600"
+              className="-mr-1 ml-2 hidden h-5 w-5 text-gray-700 hover:text-violet-600 sm:block"
               aria-hidden="true"
             />
+            <MaterialSymbolsFilterAltOutline className="h-5 w-5 text-gray-700 hover:text-violet-600 sm:hidden" />
           </Menu.Button>
         </div>
         <Transition

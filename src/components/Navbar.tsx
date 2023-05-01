@@ -15,19 +15,19 @@ function Navbar() {
       <div className="flex-none">
         <ul className="menu menu-horizontal px-1">
           <li className="hidden md:block">
-            <Link href="/challenges" className="">
-              CHALLENGES
+            <Link href="/challenges" className="font-medium">
+              Challenges
             </Link>
           </li>
           <li className="hidden md:block">
-            <Link href="/solutions" className="">
-              SOLUTIONS
+            <Link href="/solutions" className="font-medium">
+              Solutions
             </Link>
           </li>
           {session?.user && (
             <li className="hidden md:block">
-              <Link href="/new-challenge" className="">
-                Add Challenge
+              <Link href="/new-challenge" className="font-medium">
+                New Challenge
               </Link>
             </li>
           )}

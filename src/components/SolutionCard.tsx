@@ -12,6 +12,7 @@ function SolutionCard({ solution }: { solution: Solution }) {
 
   return (
     <div
+      data-test-id="solutionCard"
       style={{
         breakInside: "avoid",
         pageBreakInside: "avoid",
@@ -21,6 +22,7 @@ function SolutionCard({ solution }: { solution: Solution }) {
       <Link
         className="overflow-hidden rounded-t-xl  "
         href={`/solutions/${solution.id}`}
+        data-test-id="solutionCardImage"
       >
         <Image
           className="h-auto w-full rounded-t-xl transition-all duration-300 hover:scale-105   "
@@ -35,7 +37,7 @@ function SolutionCard({ solution }: { solution: Solution }) {
       </Link>
       <div className="p-4 md:p-5">
         <p className="text-sm text-gray-500">Submitted {timeElpsed}</p>
-        <Link href={`/solutions/${solution.id}`}>
+        <Link data-test-id="solutionCardTitle" href={`/solutions/${solution.id}`}>
           <h3 className="text-xl font-semibold text-gray-800 hover:underline dark:text-white ">
             {solution.title}
           </h3>

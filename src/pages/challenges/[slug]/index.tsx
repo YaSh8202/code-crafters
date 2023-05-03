@@ -10,6 +10,7 @@ import { prisma } from "~/server/db";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import { useSession } from "next-auth/react";
 import PageHeader from "~/components/PageHeader";
+import { StarFilled, StarOutline } from "~/components/Icones";
 const MDEditor = dynamic(
   () => import("@uiw/react-md-editor").then((mod) => mod.default.Markdown),
   { ssr: false }
@@ -17,10 +18,64 @@ const MDEditor = dynamic(
 
 const ChallengePage = (props: { slug: string }) => {
   const { slug } = props;
+  const utilis = api.useContext();
   const { data: challenge } = api.challenge.getBySlug.useQuery({
     slug: slug,
   });
   const { status } = useSession();
+  const { data } = api.challenge.isStarred.useQuery({
+    slug,
+  });
+  const toggleStar = api.challenge.toggleStar.useMutation({
+    onError: (error) => {
+      console.log(error);
+    },
+    onMutate: async ({ slug }) => {
+      await utilis.challenge.isStarred.cancel({
+        slug,
+      });
+      const prevData = utilis.challenge.isStarred.getData({
+        slug,
+      });
+      if (!prevData) {
+        return { prevData };
+      }
+      utilis.challenge.isStarred.setData(
+        {
+          slug,
+        },
+        (prevData) => {
+          if (!prevData) {
+            return {
+              isStarred: false,
+              stars: 0,
+            };
+          }
+
+          return {
+            ...prevData,
+            isStarred: !prevData.isStarred,
+            stars: prevData.isStarred ? prevData.stars - 1 : prevData.stars + 1,
+          };
+        }
+      );
+      return { prevData };
+    },
+    onSettled: async (newChallenge) => {
+      if(!newChallenge) return;
+      await utilis.challenge.isStarred.refetch({
+        slug,
+      });
+      
+    },
+  });
+  const isStarred = data?.isStarred || false;
+  const starCount = data?.stars || 0;
+
+  const handleStar = () => {
+    toggleStar.mutate({ slug });
+  };
+
 
   if (!challenge || !slug) return <div>Challenge not found</div>;
   return (
@@ -28,11 +83,11 @@ const ChallengePage = (props: { slug: string }) => {
       <Head>
         <title>{challenge.title}</title>
       </Head>
-      <PageHeader pageTitle={'challenge'} />
-      <main className=" max-w-7xl mx-auto pt-8">
+      <PageHeader pageTitle={"challenge"} />
+      <main className=" mx-auto max-w-7xl pt-8">
         <div className="grid grid-cols-2 gap-6 ">
-          <section className=" col-span-2 flex flex-col-reverse md:flex-row space-y-4 md:space-x-6 rounded-xl border bg-white p-6 ">
-            <div className="mt-2 md:my-auto flex md:flex-1 flex-col space-y-4">
+          <section className=" col-span-2 flex flex-col-reverse space-y-4 rounded-xl border bg-white p-6 md:flex-row md:space-x-6 ">
+            <div className="mt-2 flex flex-col space-y-4 md:my-auto md:flex-1">
               <div className="flex flex-row items-center justify-between">
                 <p className="font-medium uppercase text-green-500">
                   {challenge.type}
@@ -41,7 +96,24 @@ const ChallengePage = (props: { slug: string }) => {
                   {challenge.difficulty}
                 </p>
               </div>
-              <h2 className="text-3xl font-semibold">{challenge.title}</h2>
+              <div className="flex flex-row items-center justify-between">
+                <h2 className="text-3xl font-semibold">{challenge.title}</h2>
+                {status === "authenticated" && (
+                  <button
+                    onClick={() => void handleStar()}
+                    className={` flex items-center gap-1 rounded-xl border  px-3 py-1 font-semibold uppercase duration-200 hover:text-blue-400 hover:border-blue-400 ${
+                      isStarred ? "text-blue-500" : "text-gray-700"
+                    } `}
+                  >
+                    {isStarred ? (
+                      <StarFilled fontSize={20} />
+                    ) : (
+                      <StarOutline fontSize={20} />
+                    )}
+                    {starCount}
+                  </button>
+                )}
+              </div>
               <p>{challenge.shortDesc}</p>
               {status === "authenticated" && (
                 <Link

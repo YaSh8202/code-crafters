@@ -15,6 +15,7 @@ import { api } from "~/utils/api";
 import { timeAgo } from "~/utils/helpers";
 import dynamic from "next/dynamic";
 import Comments from "~/components/Comments";
+import { useSession } from "next-auth/react";
 
 const MDEditor = dynamic(
   () => import("@uiw/react-md-editor").then((mod) => mod.default.Markdown),
@@ -23,6 +24,7 @@ const MDEditor = dynamic(
 
 const SolutionPage = ({ id }: { id: string }) => {
   const utilis = api.useContext();
+  const { status } = useSession();
 
   const { data: solution } = api.solution.getById.useQuery(
     { id: id || "" },
@@ -139,21 +141,21 @@ const SolutionPage = ({ id }: { id: string }) => {
               {vote && (
                 <div className="absolute left-0 flex flex-col items-center space-y-1 text-xl duration-100 ">
                   <button
-                    disabled={mutateUpvote.status === "loading"}
+                    disabled={mutateUpvote.status === "loading" || status !== "authenticated" }
                     onClick={() => void upvoteHandler()}
-                    className="group hover:text-green-400 disabled:text-green-300 "
+                    className="group hover:text-green-400 disabled:cursor-not-allowed "
                   >
                     {vote.voteValue === 1 ? (
                       <FilledUpvote className="text-green-500 group-hover:text-green-400 " />
                     ) : (
                       <Upvote />
-                    )}
+                    )}      
                   </button>
                   <p>{vote.voteCount}</p>
                   <button
-                    disabled={mutateDownvote.status === "loading"}
+                    disabled={mutateDownvote.status === "loading" || status !== "authenticated" }
                     onClick={() => void downvoteHandler()}
-                    className="group  "
+                    className="group disabled:cursor-not-allowed "
                   >
                     {vote.voteValue === -1 ? (
                       <FilledDownvote className=" text-red-400 " />

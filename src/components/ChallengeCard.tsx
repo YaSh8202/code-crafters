@@ -60,11 +60,10 @@ function ChallengeCard({
       return { prevData };
     },
     onSettled: async (newChallenge) => {
-      if(!newChallenge) return;
+      if (!newChallenge) return;
       await utilis.challenge.isStarred.refetch({
         slug,
       });
-      
     },
   });
   const { data } = api.challenge.isStarred.useQuery({
@@ -79,7 +78,10 @@ function ChallengeCard({
   };
 
   return (
-    <div className="card max-w-[24rem] mx-3 md:mx-0 justify-self-center border bg-base-100  ">
+    <div
+      data-test-id="challengeCard"
+      className="card mx-3 max-w-[24rem] justify-self-center border bg-base-100 md:mx-0  "
+    >
       <figure className="relative">
         <Link href={`/challenges/${slug}`}>
           <Image
@@ -90,28 +92,29 @@ function ChallengeCard({
             className="h-[256px] object-cover transition-all duration-300 hover:scale-105"
           />
         </Link>
-        {status === "authenticated" && (
-          <button
-            onClick={() => void handleStar()}
-            className={`absolute right-3 top-3 flex items-center gap-1 rounded-xl border bg-gray-100 px-3 py-2 font-semibold uppercase shadow duration-150 hover:text-blue-400 ${
-              isStarred ? "text-blue-500" : "text-gray-700"
-            } `}
-          >
-            {isStarred ? (
-              <StarFilled fontSize={20} />
-            ) : (
-              <StarOutline fontSize={20} />
-            )}
-            {starCount}
-          </button>
-        )}
+
+        <button
+          disabled={status !== "authenticated"}
+          onClick={() => void handleStar()}
+          className={`absolute right-3 top-3  flex items-center gap-1 rounded-xl border bg-gray-100 px-3 py-2 font-semibold uppercase shadow duration-150 hover:text-blue-400 disabled:hover:text-gray-600 ${
+            isStarred ? "text-blue-500" : "text-gray-700"
+          }  `}
+        >
+          {isStarred ? (
+            <StarFilled fontSize={20} />
+          ) : (
+            <StarOutline fontSize={20} />
+          )}
+          {starCount}
+        </button>
       </figure>
       <div className="card-body">
         <Link
+          data-test-id="challengeCardTitle"
           href={`/challenges/${slug}`}
           className="card-title line-clamp-1 text-2xl hover:link "
         >
-          {title}
+          <h4>{title}</h4>
         </Link>
         <div className="flex items-center justify-between">
           <span className="font-semibold uppercase text-accent">{type}</span>
@@ -119,7 +122,9 @@ function ChallengeCard({
             {difficulty}
           </span>
         </div>
-        <p className="line-clamp-4">{description}</p>
+        <p data-test-id="challengeCardDescription" className="line-clamp-4">
+          {description}
+        </p>
       </div>
     </div>
   );

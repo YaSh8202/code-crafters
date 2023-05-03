@@ -122,7 +122,10 @@ const ChallengesPage: NextPage = () => {
         </div>
       </PageHeader>
       <main className=" mx-auto mt-4 max-w-7xl  ">
-        <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-8">
+        <div
+          data-test-id="challengesContainer"
+          className="grid w-full grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-8"
+        >
           {filteredChallenges?.map((challenge) => (
             <ChallengeCard key={challenge.id} challenge={challenge} />
           ))}

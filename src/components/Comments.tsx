@@ -13,6 +13,7 @@ import {
 import { CommentIcon } from "./Icones";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { toast } from "react-hot-toast";
 
 type CommentType = RouterOutputs["solution"]["getComments"][0];
 
@@ -159,7 +160,7 @@ function CommentForm({
 }) {
   const utilis = api.useContext();
   const [comment, setComment] = useState("");
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const newComment = api.solution.createComment.useMutation({
     onMutate: async ({ solId, text, parentCommentId }) => {
       await utilis.solution.getComments.cancel({
@@ -208,6 +209,14 @@ function CommentForm({
   });
 
   const handleSubmit = () => {
+    if(status!=="authenticated"){
+      toast("You are not logged in",{
+        position: 'bottom-center',
+        icon: '🔒',
+      })
+      return;
+    }
+
     if (comment.trim() === "") return;
     onSubmit?.();
     newComment.mutate({
@@ -219,7 +228,19 @@ function CommentForm({
   };
 
   return (
-    <div data-color-mode="light" className="flex flex-col space-x-2   ">
+    <div
+      data-color-mode="light"
+      className="relative flex flex-col space-x-2   "
+    >
+      {/* { status !== "authenticated" &&
+        <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/20">
+          <p className="text-xl text-blue-300">
+            
+             You need to be logged in to comment
+            
+          </p>
+        </div>
+      } */}
       <MDEditor
         value={comment}
         onChange={(val) => {

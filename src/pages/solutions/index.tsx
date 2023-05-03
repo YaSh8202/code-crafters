@@ -17,7 +17,7 @@ const SolutionsPage: NextPage = () => {
       <PageHeader pageTitle="Solutions" />
 
       <main>
-        <section className="mx-auto flex max-w-7xl flex-wrap ">
+        <section data-test-id="solutionsContainer" className="mx-auto flex max-w-7xl flex-wrap ">
           {solutions ? (
             solutions.map((solution) => (
               <SolutionCard key={solution.id} solution={solution} />

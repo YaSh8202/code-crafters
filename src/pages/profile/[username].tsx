@@ -47,7 +47,7 @@ const ProfilePage: NextPage<Props> = ({ username }: Props) => {
               height={200}
             />
           </div>
-          <div className="flex flex-[2] flex-col justify-between gap-3 ">
+          <div className="flex flex-[2] flex-col items-center md:items-start justify-between gap-3 ">
             <div className="flex flex-col items-center md:items-start">
               <h3 className="text-center text-2xl font-medium  text-gray-900 ">
                 {user.name}

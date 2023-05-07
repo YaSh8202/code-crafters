@@ -24,3 +24,9 @@ jobs:
           envkey_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       - name: Install NPM dependencies
         run: pnpm install --no-frozen-lockfile
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v2
+        with:
+          record: true
+          start: pnpm dev
+      

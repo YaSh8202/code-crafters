@@ -24,22 +24,12 @@ jobs:
           envkey_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       - name: Install NPM dependencies
         run: pnpm install --no-frozen-lockfile
-      - name: Start Next.js server
-        run: pnpm run dev
-        timeout-minutes: 5
-        continue-on-error: true
-      - name: Wait for server to be up and running
-        run: |
-          until curl --fail http://localhost:3000; do
-            echo "Waiting for Next.js server to start..."
-            sleep 1
-          done
       - name: Run Cypress tests
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v5
         with:
           browser: chrome
           record: true
-          start: npx cypress run
+          start: npm run dev
           wait-on: "http://localhost:3000"
 
       

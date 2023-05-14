@@ -30,5 +30,10 @@ jobs:
           browser: chrome
           start: npm run dev
           wait-on: "http://localhost:3000"
+      - name: Cypress Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Cypress Videos
+          path: /home/runner/work/code-crafters/code-crafters/cypress/videos/
 
       

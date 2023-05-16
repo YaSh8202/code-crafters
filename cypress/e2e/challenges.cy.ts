@@ -1,6 +1,11 @@
 describe("Challenges", () => {
   it("Test Challenge Container", () => {
-    cy.visit("/");
+    cy.visit("/",{
+      headers: {
+        "Accept-Encoding": "gzip, deflate",
+      },
+      timeout: 10000,
+    });
     cy.wait(1000);
     cy.url().should("include", "/challenges");
     cy.get('[data-test-id="challengesContainer"]').should("exist");

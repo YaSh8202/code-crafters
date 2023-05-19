@@ -157,7 +157,7 @@ const SortByMenu = ({
 }) => {
   return (
     <div className="">
-      <Menu as="div" className="relative z-20 inline-block text-left ">
+      <Menu as="div" className="relative z-[5] inline-block text-left ">
         <div>
           <Menu.Button className="inline-flex w-full justify-center py-2 text-sm font-medium uppercase  text-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-700 focus-visible:ring-opacity-75">
             <p className="hidden sm:block">Sort By</p>
@@ -220,7 +220,7 @@ const FilterBy = ({
 }) => {
   return (
     <div className="">
-      <Menu as="div" className="relative z-20 inline-block text-left ">
+      <Menu as="div" className="relative z-[5] inline-block text-left ">
         <div>
           <Menu.Button className="inline-flex w-full justify-center py-2 text-sm font-medium uppercase  text-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-700 focus-visible:ring-opacity-75 ">
             <p className="hidden sm:block">Filter By</p>

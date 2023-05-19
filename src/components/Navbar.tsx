@@ -2,6 +2,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { MdiGithub } from "./Icones";
+import Menu from "~/components/Menu";
 
 function Navbar() {
   const { data: session, status } = useSession();
@@ -31,10 +32,11 @@ function Navbar() {
               </Link>
             </li>
           )}
+
           {status !== "loading" && (
             <>
               {session?.user.image ? (
-                <div className="dropdown-end dropdown">
+                <div className="dropdown-end dropdown hidden md:block ">
                   <label
                     tabIndex={0}
                     className="btn-ghost btn-circle avatar btn "
@@ -65,9 +67,9 @@ function Navbar() {
               ) : (
                 <button
                   onClick={() => void signIn("github")}
-                  className="flex items-center rounded-full bg-gray-800 px-2 py-2 uppercase text-white duration-150 hover:scale-[1.02] hover:bg-gray-900 md:space-x-2 md:px-3 "
+                  className="hidden items-center rounded-full bg-gray-800 px-2 py-2 uppercase text-white duration-150 hover:scale-[1.02] hover:bg-gray-900 md:flex md:space-x-2 md:px-3 "
                 >
-                  <p className=" hidden md:block">Log in with github</p>
+                  Log in with github
                   <MdiGithub fontSize={24} />
                 </button>
               )}
@@ -75,6 +77,7 @@ function Navbar() {
           )}
         </ul>
       </div>
+      <Menu />
     </div>
   );
 }

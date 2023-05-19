@@ -4,6 +4,7 @@ import React from "react";
 import { StarFilled, StarOutline } from "./Icones";
 import { type RouterOutputs, api } from "~/utils/api";
 import { useSession } from "next-auth/react";
+import { toast } from "react-hot-toast";
 
 type AllChallenges = RouterOutputs["challenge"]["getAll"];
 
@@ -74,6 +75,16 @@ function ChallengeCard({
   const starCount = data?.stars || 0;
 
   const handleStar = () => {
+    if (status !== "authenticated") {
+      toast("You are not logged in", {
+        icon: "🔒",
+        ariaProps: {
+          role: "status",
+          "aria-live": "polite",
+        },
+      });
+      return;
+    }
     toggleStar.mutate({ slug });
   };
 
@@ -94,7 +105,7 @@ function ChallengeCard({
         </Link>
 
         <button
-          disabled={status !== "authenticated"}
+          // disabled={status !== "authenticated"}
           onClick={() => void handleStar()}
           className={`absolute right-3 top-3  flex items-center gap-1 rounded-xl border bg-gray-100 px-3 py-2 font-semibold uppercase shadow duration-150 hover:text-blue-400 disabled:hover:text-gray-600 ${
             isStarred ? "text-blue-500" : "text-gray-700"

@@ -1,15 +1,8 @@
-import { type NextPage } from "next";
+import {  type NextPage } from "next";
 import Head from "next/head";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
 
 const Home: NextPage = () => {
-  const router = useRouter();
-
-  useEffect(() => {
-    void router.push("/challenges");
-  }, [router]);
 
   return (
     <>
@@ -45,4 +38,14 @@ const AuthShowcase: React.FC = () => {
       </button>
     </div>
   );
+};
+
+export const getServerSideProps = () => {
+  return {
+    props: {},
+    redirect: {
+      permanent: false,
+      destination: "/challenges",
+    },
+  };
 };

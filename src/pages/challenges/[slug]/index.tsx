@@ -62,11 +62,10 @@ const ChallengePage = (props: { slug: string }) => {
       return { prevData };
     },
     onSettled: async (newChallenge) => {
-      if(!newChallenge) return;
+      if (!newChallenge) return;
       await utilis.challenge.isStarred.refetch({
         slug,
       });
-      
     },
   });
   const isStarred = data?.isStarred || false;
@@ -76,7 +75,6 @@ const ChallengePage = (props: { slug: string }) => {
     toggleStar.mutate({ slug });
   };
 
-
   if (!challenge || !slug) return <div>Challenge not found</div>;
   return (
     <>
@@ -84,9 +82,14 @@ const ChallengePage = (props: { slug: string }) => {
         <title>{challenge.title}</title>
       </Head>
       <PageHeader pageTitle={"challenge"} />
-      <main className=" mx-auto max-w-7xl pt-8">
+      <main
+        style={{
+          width: "clamp(300px,80rem,90vw)",
+        }}
+        className=" mx-auto pt-4  md:pt-8"
+      >
         <div className="grid grid-cols-2 gap-6 ">
-          <section className=" col-span-2 flex flex-col-reverse space-y-4 rounded-xl border bg-white p-6 md:flex-row md:space-x-6 ">
+          <section className=" col-span-2 flex flex-col-reverse space-y-4 rounded-xl border bg-white p-3 md:p-6 md:flex-row md:space-x-6 ">
             <div className="mt-2 flex flex-col space-y-4 md:my-auto md:flex-1">
               <div className="flex flex-row items-center justify-between">
                 <p className="font-medium uppercase text-green-500">
@@ -101,7 +104,7 @@ const ChallengePage = (props: { slug: string }) => {
                 {status === "authenticated" && (
                   <button
                     onClick={() => void handleStar()}
-                    className={` flex items-center gap-1 rounded-xl border  px-3 py-1 font-semibold uppercase duration-200 hover:text-blue-400 hover:border-blue-400 ${
+                    className={` flex items-center gap-1 rounded-xl border  px-3 py-1 font-semibold uppercase duration-200 hover:border-blue-400 hover:text-blue-400 ${
                       isStarred ? "text-blue-500" : "text-gray-700"
                     } `}
                   >

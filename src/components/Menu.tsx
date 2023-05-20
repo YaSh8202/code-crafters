@@ -43,7 +43,7 @@ const StyledMenu = styled.div`
 `;
 
 interface HamburgerButtonProps {
-  menuOpen: boolean;
+  menuopen: number;
 }
 
 const StyledHamburgerButton = styled.button<HamburgerButtonProps>`
@@ -83,11 +83,11 @@ const StyledHamburgerButton = styled.button<HamburgerButtonProps>`
     background-color: #1f2937;
     transition-duration: 0.22s;
     transition-property: transform;
-    transition-delay: ${(props) => (props.menuOpen ? `0.12s` : `0s`)};
-    transform: rotate(${(props) => (props.menuOpen ? `225deg` : `0deg`)});
+    transition-delay: ${(props) => (props.menuopen ? `0.12s` : `0s`)};
+    transform: rotate(${(props) => (props.menuopen ? `225deg` : `0deg`)});
     transition-timing-function: cubic-bezier(
       ${(props) =>
-        props.menuOpen ? `0.215, 0.61, 0.355, 1` : `0.55, 0.055, 0.675, 0.19`}
+        props.menuopen ? `0.215, 0.61, 0.355, 1` : `0.55, 0.055, 0.675, 0.19`}
     );
     &:before,
     &:after {
@@ -105,24 +105,24 @@ const StyledHamburgerButton = styled.button<HamburgerButtonProps>`
       transition-property: transform;
     }
     &:before {
-      width: ${(props) => (props.menuOpen ? `100%` : `120%`)};
-      top: ${(props) => (props.menuOpen ? `0` : `-10px`)};
-      opacity: ${(props) => (props.menuOpen ? 0 : 1)};
-      transition: ${({ menuOpen }) =>
-        menuOpen ? "var(--ham-before-active)" : "var(--ham-before)"};
+      width: ${(props) => (props.menuopen ? `100%` : `120%`)};
+      top: ${(props) => (props.menuopen ? `0` : `-10px`)};
+      opacity: ${(props) => (props.menuopen ? 0 : 1)};
+      transition: ${({ menuopen }) =>
+        menuopen ? "var(--ham-before-active)" : "var(--ham-before)"};
     }
     &:after {
-      width: ${(props) => (props.menuOpen ? `100%` : `80%`)};
-      bottom: ${(props) => (props.menuOpen ? `0` : `-10px`)};
-      transform: rotate(${(props) => (props.menuOpen ? `-90deg` : `0`)});
-      transition: ${({ menuOpen }) =>
-        menuOpen ? "var(--ham-after-active)" : "var(--ham-after)"};
+      width: ${(props) => (props.menuopen ? `100%` : `80%`)};
+      bottom: ${(props) => (props.menuopen ? `0` : `-10px`)};
+      transform: rotate(${(props) => (props.menuopen ? `-90deg` : `0`)});
+      transition: ${({ menuopen }) =>
+        menuopen ? "var(--ham-after-active)" : "var(--ham-after)"};
     }
   }
 `;
 
 interface SidebarProps {
-  menuOpen: boolean;
+  menuopen: number;
 }
 
 const StyledSidebar = styled.aside<SidebarProps>`
@@ -143,8 +143,8 @@ const StyledSidebar = styled.aside<SidebarProps>`
     background-color: #f3f4f6;
     box-shadow: -10px 0px 30px -15px var(--navy-shadow);
     z-index: 9;
-    transform: translateX(${(props) => (props.menuOpen ? 0 : 100)}vw);
-    visibility: ${(props) => (props.menuOpen ? "visible" : "hidden")};
+    transform: translateX(${(props) => (props.menuopen ? 0 : 100)}vw);
+    visibility: ${(props) => (props.menuopen ? "visible" : "hidden")};
     transition: var(--transition);
   }
 
@@ -230,9 +230,9 @@ const StyledSidebar = styled.aside<SidebarProps>`
 
 
 const Menu = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuopen, setMenuopen] = useState(false);
 
-  const toggleMenu = () => setMenuOpen(!menuOpen);
+  const toggleMenu = () => setMenuopen(!menuopen);
   const { data: session } = useSession();
 
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -273,7 +273,7 @@ const Menu = () => {
     switch (e.key) {
       case KEY_CODES.ESCAPE:
       case KEY_CODES.ESCAPE_IE11: {
-        setMenuOpen(false);
+        setMenuopen(false);
         break;
       }
 
@@ -300,7 +300,7 @@ const Menu = () => {
     if (e.currentTarget === null) return;
 
     if ((e.currentTarget as Window).innerWidth > 768) {
-      setMenuOpen(false);
+      setMenuopen(false);
     }
   };
 
@@ -318,18 +318,18 @@ const Menu = () => {
   }, []);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
-  useOnClickOutside(wrapperRef, () => setMenuOpen(false));
+  useOnClickOutside(wrapperRef, () => setMenuopen(false));
 
   return (
     <StyledMenu>
       {/* <Helmet>
-        <body className={menuOpen ? 'blur' : ''} />
+        <body className={menuopen ? 'blur' : ''} />
       </Helmet> */}
 
       <div ref={wrapperRef}>
         <StyledHamburgerButton
           onClick={toggleMenu}
-          menuOpen={menuOpen}
+          menuopen={menuopen? 1: 0}
           ref={buttonRef}
           aria-label="Menu"
         >
@@ -339,16 +339,16 @@ const Menu = () => {
         </StyledHamburgerButton>
 
         <StyledSidebar
-          menuOpen={menuOpen}
-          aria-hidden={!menuOpen}
-          tabIndex={menuOpen ? 1 : -1}
+          menuopen={menuopen? 1: 0}
+          aria-hidden={!menuopen}
+          tabIndex={menuopen ? 1 : -1}
         >
           <nav ref={navRef}>
             {navLinks && (
               <ol>
                 {navLinks.map(({ url, name }, i) => (
                   <li key={i}>
-                    <Link href={url} onClick={() => setMenuOpen(false)}>
+                    <Link href={url} onClick={() => setMenuopen(false)}>
                       {name}
                     </Link>
                   </li>
@@ -359,7 +359,7 @@ const Menu = () => {
                       <Link
                         href={`/profile/${session.user.username}`}
                         className="profile"
-                        onClick={() => setMenuOpen(false)}
+                        onClick={() => setMenuopen(false)}
                       >
                         <div className="">
                           <Image

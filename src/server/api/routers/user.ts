@@ -27,7 +27,7 @@ export const userRouter = createTRPCRouter({
         about: z.string(),
       })
     )
-    .query(({ ctx, input }) => {
+    .mutation(({ ctx, input }) => {
       return ctx.prisma.user.update({
         where: {
           id: ctx.session.user.id,

@@ -16,6 +16,7 @@ import { timeAgo } from "~/utils/helpers";
 import dynamic from "next/dynamic";
 import Comments from "~/components/Comments";
 import { useSession } from "next-auth/react";
+import PageHeader from "~/components/PageHeader";
 
 const MDEditor = dynamic(
   () => import("@uiw/react-md-editor").then((mod) => mod.default.Markdown),
@@ -128,6 +129,7 @@ const SolutionPage = ({ id }: { id: string }) => {
       <Head>
         <title>{title}</title>
       </Head>
+      <PageHeader pageTitle="Solution" />
 
       <main className="relative max-w-full  ">
         <article

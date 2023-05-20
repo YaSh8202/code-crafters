@@ -53,7 +53,7 @@ function Comments({ id }: { id: string }) {
   }
 
   return (
-    <div className=" mx-auto my-16 max-w-5xl ">
+    <div className=" mx-auto my-16 w-[clamp(20rem,90vw,64rem)] ">
       <CommentForm solId={id} />
       <section className="mt-5 flex flex-col rounded-lg border bg-white p-5">
         {comments.map(

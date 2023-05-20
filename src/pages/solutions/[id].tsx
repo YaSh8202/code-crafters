@@ -141,7 +141,10 @@ const SolutionPage = ({ id }: { id: string }) => {
               {vote && (
                 <div className="absolute left-0 flex flex-col items-center space-y-1 text-xl duration-100 ">
                   <button
-                    disabled={mutateUpvote.status === "loading" || status !== "authenticated" }
+                    disabled={
+                      mutateUpvote.status === "loading" ||
+                      status !== "authenticated"
+                    }
                     onClick={() => void upvoteHandler()}
                     className="group hover:text-green-400 disabled:cursor-not-allowed "
                   >
@@ -149,11 +152,14 @@ const SolutionPage = ({ id }: { id: string }) => {
                       <FilledUpvote className="text-green-500 group-hover:text-green-400 " />
                     ) : (
                       <Upvote />
-                    )}      
+                    )}
                   </button>
                   <p>{vote.voteCount}</p>
                   <button
-                    disabled={mutateDownvote.status === "loading" || status !== "authenticated" }
+                    disabled={
+                      mutateDownvote.status === "loading" ||
+                      status !== "authenticated"
+                    }
                     onClick={() => void downvoteHandler()}
                     className="group disabled:cursor-not-allowed "
                   >
@@ -165,8 +171,10 @@ const SolutionPage = ({ id }: { id: string }) => {
                   </button>
                 </div>
               )}
-              <p>Submitted about {timeAgo(solution.createdAt)}</p>
-              <h1 className="my-3 text-3xl font-semibold tracking-wider ">
+              <p className="text-sm md:text-base">
+                Submitted about {timeAgo(solution.createdAt)}
+              </p>
+              <h1 className="my-3 px-6 text-center text-2xl font-semibold tracking-wider md:text-3xl ">
                 {solution.title}
               </h1>
               <div className="my-2 flex flex-row items-center space-x-3 ">
@@ -198,12 +206,12 @@ const SolutionPage = ({ id }: { id: string }) => {
               </div>
             </div>
             <div className="flex flex-row justify-between">
-              <div className="flex flex-row items-center space-x-3">
+              <div className="flex w-full flex-col items-center space-y-3 sm:space-x-3 sm:flex-row">
                 {solution.liveURL && (
                   <Link
                     target="_blank"
                     href={solution.liveURL}
-                    className="flex flex-row items-center gap-2 rounded-full bg-red-500 px-5 py-2 text-lg font-semibold uppercase text-white duration-150 hover:brightness-90 "
+                    className="flex w-full flex-row items-center justify-center gap-2 rounded-full bg-red-500 px-5 py-2 text-lg font-semibold uppercase text-white duration-150 hover:brightness-90 sm:w-auto "
                   >
                     Preview
                     <Fa6SolidArrowUpRightFromSquare fontSize={14} />
@@ -212,7 +220,7 @@ const SolutionPage = ({ id }: { id: string }) => {
                 <Link
                   target="_blank"
                   href={`${solution.repoURL}`}
-                  className="flex items-center gap-2  rounded-full bg-gray-100 px-5 py-2 text-lg font-semibold uppercase text-gray-800 duration-150 hover:brightness-90 "
+                  className="flex w-full items-center justify-center  gap-2 rounded-full  bg-gray-100 px-5 py-2 text-lg font-semibold uppercase text-gray-800 duration-150 hover:brightness-90 sm:w-auto "
                 >
                   View Code
                   <Fa6SolidArrowUpRightFromSquare fontSize={14} />
@@ -250,7 +258,7 @@ const SolutionPage = ({ id }: { id: string }) => {
         {solution.description && (
           <section
             data-color-mode="light"
-            className="prose col-span-2 mx-auto mt-8 max-w-5xl rounded-xl border bg-white  p-6  "
+            className="prose max-w-5xl  col-span-2 mx-auto mt-8 w-[clamp(20rem,90vw,64rem)] rounded-xl border bg-white  p-6  "
           >
             <h3>Description</h3>
             <MDEditor

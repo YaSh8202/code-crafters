@@ -81,7 +81,22 @@ const ChallengePage = (props: { slug: string }) => {
       <Head>
         <title>{challenge.title}</title>
       </Head>
-      <PageHeader pageTitle={"challenge"} />
+      <PageHeader pageTitle={"challenge"}>
+        <Link href={`/challenges/${slug}`}>
+          <p className="two group relative mr-4 w-max">
+            <span className="font-medium">Overview</span>
+            <span className="absolute -bottom-1 left-1/2 h-0.5  w-[50%] bg-blue-400 transition-all duration-300 "></span>
+            <span className="absolute -bottom-1 right-1/2 h-0.5  w-[50%] bg-blue-400 transition-all duration-300"></span>
+          </p>
+        </Link>
+        <Link href={`/challenges/${slug}/solutions`}>
+          <p className="two group relative w-max">
+            <span className="font-medium">Solutions</span>
+            <span className="absolute -bottom-1 left-1/2 h-0.5 w-0 bg-blue-400 transition-all duration-300 group-hover:w-[50%]"></span>
+            <span className="absolute -bottom-1 right-1/2 h-0.5 w-0 bg-blue-400 transition-all duration-300 group-hover:w-[50%]"></span>
+          </p>
+        </Link>
+      </PageHeader>
       <main
         style={{
           width: "clamp(300px,80rem,90vw)",
@@ -89,7 +104,7 @@ const ChallengePage = (props: { slug: string }) => {
         className=" mx-auto pt-4  md:pt-8"
       >
         <div className="grid grid-cols-2 gap-6 ">
-          <section className=" col-span-2 flex flex-col-reverse space-y-4 rounded-xl border bg-white px-3 pb-5 md:p-6 md:flex-row md:space-x-6 ">
+          <section className=" col-span-2 flex flex-col-reverse space-y-4 rounded-xl border bg-white px-3 pb-5 md:flex-row md:space-x-6 md:p-6 ">
             <div className="mt-2 flex flex-col space-y-4 md:my-auto md:flex-1">
               <div className="flex flex-row items-center justify-between">
                 <p className="font-medium uppercase text-green-500">
@@ -104,7 +119,7 @@ const ChallengePage = (props: { slug: string }) => {
                 {status === "authenticated" && (
                   <button
                     onClick={() => void handleStar()}
-                    className={` flex items-center gap-1 self-end ml-2 rounded-xl border  px-3 py-1 font-semibold uppercase duration-200 hover:border-blue-400 hover:text-blue-400 ${
+                    className={` ml-2 flex items-center gap-1 self-end rounded-xl border  px-3 py-1 font-semibold uppercase duration-200 hover:border-blue-400 hover:text-blue-400 ${
                       isStarred ? "text-blue-500" : "text-gray-700"
                     } `}
                   >

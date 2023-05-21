@@ -100,7 +100,7 @@ function ChallengeCard({
             alt={`${title}-image`}
             width={384}
             height={256}
-            className="h-[256px] object-cover transition-all duration-300 hover:scale-105"
+            className=" aspect-[4/3] object-cover transition-all duration-300 hover:scale-105"
           />
         </Link>
 

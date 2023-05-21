@@ -15,6 +15,7 @@ type Props = {
   username: string;
 };
 
+
 interface editBioForm extends HTMLFormElement {
   about: HTMLInputElement;
 }

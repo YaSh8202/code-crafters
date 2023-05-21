@@ -344,7 +344,7 @@ const Menu = () => {
           tabIndex={menuopen ? 1 : -1}
         >
           <nav ref={navRef}>
-            {navLinks && (
+            
               <ol>
                 {navLinks.map(({ url, name }, i) => (
                   <li key={i}>
@@ -391,7 +391,7 @@ const Menu = () => {
                   </>
                 )}
               </ol>
-            )}
+            
           </nav>
         </StyledSidebar>
       </div>

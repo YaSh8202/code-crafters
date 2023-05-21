@@ -33,6 +33,9 @@ const config = {
     domains: ["avatars.githubusercontent.com", "res.cloudinary.com",],
   },
   staticPageGenerationTimeout: 100,
+  compiler: {
+    styledComponents: true
+  }
 };
 // export default config;
 const nextConfig = {

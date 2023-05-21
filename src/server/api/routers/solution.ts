@@ -15,11 +15,43 @@ export const SolutionRouter = createTRPCRouter({
   }),
 
   getAllByChallenge: publicProcedure
-    .input(z.object({ challengeId: z.string() }))
+    .input(z.object({ slug: z.string() }))
     .query(({ input, ctx }) => {
       return ctx.prisma.solution.findMany({
         where: {
-          challengeId: input.challengeId,
+          challenge: {
+            slug: input.slug,
+          },
+        },
+        select: {
+          id: true,
+          title: true,
+          tags: true,
+          createdAt: true,
+          image: true,
+          voteValue: true,
+          _count: {
+            select: {
+              comments: true,
+            },
+          },
+          user: {
+            select: {
+              username: true,
+              name: true,
+              image: true,
+            },
+          },
+          challenge: {
+            select: {
+              type: true,
+              title: true,
+              slug: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
         },
       });
     }),

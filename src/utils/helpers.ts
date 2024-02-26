@@ -26,6 +26,8 @@ export function timeAgo(date: Date) {
   }
 }
 
+
+
 export const uploadToCloudinary = async (
   acceptedFiles: File[],
   isVideo?: boolean
@@ -50,3 +52,5 @@ export const uploadToCloudinary = async (
   );
   return uploadedImages;
 };
+
+

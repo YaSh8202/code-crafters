@@ -152,7 +152,7 @@ const NewChallengePage: NextPage = () => {
                 Challenge Type *
               </span>
             </label>
-            <select {...register("type")} className="select-bordered select">
+            <select {...register("type")} className="select select-bordered">
               {Object.values(ChallengeType).map((type, i) => (
                 <option key={i} value={type}>
                   {type}
@@ -168,7 +168,7 @@ const NewChallengePage: NextPage = () => {
             </label>
             <select
               {...register("difficulty")}
-              className="select-bordered select"
+              className="select select-bordered"
             >
               {Object.values(Difficulty).map((d, i) => (
                 <option key={i} value={d}>
@@ -230,7 +230,7 @@ const NewChallengePage: NextPage = () => {
           </div>
           <button
             type="submit"
-            className="btn-primary btn mt-5"
+            className="btn btn-primary mt-5"
             disabled={loading}
           >
             {loading && (
@@ -249,9 +249,6 @@ const NewChallengePage: NextPage = () => {
 };
 
 export default NewChallengePage;
-
-
-
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const session = await getServerAuthSession(ctx);

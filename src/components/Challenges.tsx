@@ -7,7 +7,7 @@ type Challenge = RouterOutputs["challenge"]["getAll"][number];
 function Challenges({ challenges }: { challenges?: Challenge[] }) {
   return (
     <section className=" mx-auto mt-4 max-w-7xl  ">
-      <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-8">
+      <div className="grid w-full grid-cols-4 gap-8">
         {challenges ? (
           challenges.map((challenge) => (
             <ChallengeCard

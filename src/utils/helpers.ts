@@ -1,4 +1,5 @@
 import { type UploadApiResponse } from "cloudinary";
+import type { FileWithPath } from "react-dropzone/.";
 
 export function timeAgo(date: Date) {
   const time = Date.now() - new Date(date).getTime();
@@ -29,7 +30,7 @@ export function timeAgo(date: Date) {
 
 
 export const uploadToCloudinary = async (
-  acceptedFiles: File[],
+  acceptedFiles: readonly FileWithPath[],
   isVideo?: boolean
 ) => {
   const uploadedImages = await Promise.all(

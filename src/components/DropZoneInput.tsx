@@ -9,7 +9,7 @@ function DropZoneInput({
   getRootProps,
   getInputProps,
 }: {
-  acceptedFiles: File[];
+  acceptedFiles: readonly FileWithPath[];
   getRootProps: <T extends DropzoneRootProps>(props?: T | undefined) => T;
   getInputProps: <T extends DropzoneInputProps>(props?: T | undefined) => T;
 }) {

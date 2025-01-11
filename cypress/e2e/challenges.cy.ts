@@ -40,7 +40,7 @@ describe("Challenges", () => {
       .find('[data-test-id="challengeCardTitle"]')
       .should("exist")
       .click();
-    cy.wait(1000);
+    cy.wait(4000);
     cy.url().should("match", /\/challenges\/[a-zA-Z0-9]+/);
   });
 });

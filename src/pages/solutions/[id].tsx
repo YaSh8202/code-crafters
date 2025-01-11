@@ -208,7 +208,7 @@ const SolutionPage = ({ id }: { id: string }) => {
               </div>
             </div>
             <div className="flex flex-row justify-between">
-              <div className="flex w-full flex-col items-center space-y-3 sm:space-x-3 sm:flex-row">
+              <div className="flex w-full flex-col items-center space-y-3 sm:space-x-3 sm:space-y-0 sm:flex-row">
                 {solution.liveURL && (
                   <Link
                     target="_blank"

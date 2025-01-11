@@ -27,6 +27,7 @@ const MDEditor = dynamic(
 
 type FormValues = {
   title: string;
+  description: string;
   type: ChallengeType;
   difficulty: Difficulty;
 };
@@ -95,6 +96,7 @@ const NewChallengePage: NextPage = () => {
       imagesURL: urls[0],
       briefDesc: desc,
       title: data.title,
+      description: data.description,
       type: data.type,
       videoURL: urls[1].length ? urls[1][0] : undefined,
     });
@@ -142,6 +144,30 @@ const NewChallengePage: NextPage = () => {
               <label className="label">
                 <span className="label-text-alt text-red-400">
                   {errors.title?.message}
+                </span>
+              </label>
+            )}
+          </div>
+          <div className="flex flex-col space-x-2">
+            <label className="label">
+              <span className="label-text text-base font-medium">
+                Challenge Description *
+              </span>
+            </label>
+            <input
+              {...register("description", {
+                required: "Description is required",
+              })}
+              placeholder=""
+              type="text"
+              className={`input-bordered ${
+                errors.title ? "input-error" : ""
+              } input w-full`}
+            />
+            {errors.title?.type === "required" && (
+              <label className="label">
+                <span className="label-text-alt text-red-400">
+                  {errors.description?.message}
                 </span>
               </label>
             )}

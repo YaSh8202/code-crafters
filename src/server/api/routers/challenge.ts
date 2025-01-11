@@ -34,6 +34,7 @@ export const challengeRouter = createTRPCRouter({
       z.object({
         title: z.string(),
         type: z.nativeEnum(ChallengeType),
+        description: z.string(),
         difficulty: z.nativeEnum(Difficulty),
         briefDesc: z.string(),
         imagesURL: z.array(z.string()),
@@ -44,18 +45,11 @@ export const challengeRouter = createTRPCRouter({
       const slug =
         input.title.toLowerCase().replace(/ /g, "-") + "-" + generateUID();
 
-      const shortDesc = await shortDescGenerator(
-        input.title,
-        input.type,
-        input.difficulty,
-        input.briefDesc
-      );
-
       return ctx.prisma.challenge.create({
         data: {
           title: input.title,
           type: input.type,
-          shortDesc: shortDesc,
+          shortDesc: input.description,
           briefDesc: input.briefDesc,
           imagesURL: input.imagesURL,
           videoURL: input.videoURL,

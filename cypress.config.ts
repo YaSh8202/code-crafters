@@ -12,6 +12,7 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },
-    baseUrl: "https://code-crafters.vercel.app",
+    // baseUrl: "https://code-crafters.vercel.app",
+    baseUrl: "http://localhost:3000",
   },
 });

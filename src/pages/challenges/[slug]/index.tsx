@@ -151,7 +151,7 @@ const ChallengePage = (props: { slug: string }) => {
                 >
                   <Image
                     src={imgSrc}
-                    className="w-full object-cover"
+                    className="w-full object-fill"
                     fill
                     alt={"challengeImage"}
                   />
@@ -160,13 +160,14 @@ const ChallengePage = (props: { slug: string }) => {
                       href={`#item${
                         i - 1 < 0 ? challenge.imagesURL.length - 1 : i - 1
                       }`}
-                      className="btn-circle btn"
+                      className={`btn-circle btn ${i === 0 ? "btn-disabled" : ""}`}
+                      
                     >
                       ❮
                     </a>
                     <a
                       href={`#item${(i + 1) % challenge.imagesURL.length}`}
-                      className="btn-circle btn"
+                      className={`btn-circle btn ${i === challenge.imagesURL.length - 1 ? "btn-disabled" : ""}`}
                     >
                       ❯
                     </a>

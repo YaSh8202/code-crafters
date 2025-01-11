@@ -24,11 +24,13 @@ jobs:
           envkey_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       - name: Install NPM dependencies
         run: pnpm install --no-frozen-lockfile
+      - name: Build project
+        run: pnpm build
       - name: Run Cypress tests
         uses: cypress-io/github-action@v5
         with:
           browser: chrome
-          start: npm run dev
+          start: npm run start
           wait-on: "http://localhost:3000"
       - name: Cypress Artifact
         if: always()
@@ -37,4 +39,4 @@ jobs:
           name: Cypress Videos
           path: /home/runner/work/code-crafters/code-crafters/cypress/videos/
 
-      
+

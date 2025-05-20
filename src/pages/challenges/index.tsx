@@ -139,7 +139,7 @@ const ChallengesPage: NextPage = () => {
             </div>
             <h3 className="text-2xl font-semibold text-gray-800">No challenges found</h3>
             <p className="max-w-md text-center text-gray-500">
-              We couldn't find any challenges matching your current filters. Try adjusting your filter criteria.
+              We couldn&apos;t find any challenges matching your current filters. Try adjusting your filter criteria.
             </p>
             <button 
               onClick={() => {

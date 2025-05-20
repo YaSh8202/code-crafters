@@ -64,7 +64,7 @@ export const SolutionRouter = createTRPCRouter({
         repoURL: z.string(),
         liveURL: z.optional(z.string()),
         slug: z.string(),
-        tags: z.array(z.string()),
+        tags: z.string(),
         image: z.string(),
       })
     )

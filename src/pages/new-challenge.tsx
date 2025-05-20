@@ -93,7 +93,7 @@ const NewChallengePage: NextPage = () => {
 
     await createChallenge.mutateAsync({
       difficulty: data.difficulty,
-      imagesURL: urls[0],
+      imagesURL: urls[0][0] || "",
       briefDesc: desc,
       title: data.title,
       description: data.description,

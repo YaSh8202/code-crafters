@@ -48,9 +48,7 @@ function SolutionCard({ solution }: { solution: Solution }) {
           </p>
         </Link>
         <div className="flex flex-row flex-wrap items-center gap-x-2 text-sm  ">
-          {solution.tags.map((tag) => (
-            <span key={tag}>#{tag}</span>
-          ))}
+          {solution.tags && <span>#{solution.tags}</span>}
         </div>
         <div className="my-1 flex flex-row items-center justify-between gap-x-2  ">
           <span className="font-semibold uppercase text-lime-600">

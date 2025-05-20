@@ -143,37 +143,20 @@ const ChallengePage = (props: { slug: string }) => {
               )}
             </div>
             <div className=" carousel w-full flex-1">
-              {challenge.imagesURL?.map((imgSrc, i) => (
+              {challenge.imagesURL && (
                 <div
-                  key={i}
-                  id={`item${i}`}
+                  id="item0"
                   className="carousel-item relative min-h-[25rem] w-full"
                 >
                   <Image
-                    src={imgSrc}
+                    src={challenge.imagesURL}
                     className="w-full object-fill"
                     fill
                     alt={"challengeImage"}
                   />
-                  <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
-                    <a
-                      href={`#item${
-                        i - 1 < 0 ? challenge.imagesURL.length - 1 : i - 1
-                      }`}
-                      className={`btn-circle btn ${i === 0 ? "btn-disabled" : ""}`}
-                      
-                    >
-                      ❮
-                    </a>
-                    <a
-                      href={`#item${(i + 1) % challenge.imagesURL.length}`}
-                      className={`btn-circle btn ${i === challenge.imagesURL.length - 1 ? "btn-disabled" : ""}`}
-                    >
-                      ❯
-                    </a>
-                  </div>
+                  {/* No carousel navigation needed for single image */}
                 </div>
-              ))}
+              )}
             </div>
           </section>
           <section

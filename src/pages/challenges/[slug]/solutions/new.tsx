@@ -105,7 +105,7 @@ const NewSolutionPage = ({
       createNewSolution.mutate({
         repoURL: data.repoURL,
         liveURL: data.liveURL,
-        tags: tags,
+        tags: tags.join(','),
         description: desc,
         title: data.title,
         slug: slug,

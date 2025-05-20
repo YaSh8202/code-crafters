@@ -37,7 +37,7 @@ export const challengeRouter = createTRPCRouter({
         description: z.string(),
         difficulty: z.nativeEnum(Difficulty),
         briefDesc: z.string(),
-        imagesURL: z.array(z.string()),
+        imagesURL: z.string(),
         videoURL: z.optional(z.string()),
       })
     )

@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import LoadingSpinner from "~/components/LoadingSpinner";
 import PageHeader from "~/components/PageHeader";
 import SolutionCard from "~/components/SolutionCard";
+import { SolutionIcon } from "~/components/Icones";
 import { api } from "~/utils/api";
 
 const SolutionsPage: NextPage = () => {
@@ -49,8 +50,17 @@ const SolutionsPage: NextPage = () => {
                 <SolutionCard key={solution.id} solution={solution} />
               ))
             ) : (
-              <div className="mt-[15rem] flex w-full items-center justify-center">
-                <p>No solutions yet. </p>
+              <div className="mt-[10rem] flex w-full flex-col items-center justify-center gap-4 rounded-lg border border-gray-200 bg-white p-8 shadow-md transition-all duration-300 hover:shadow-lg">
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-100">
+                  <SolutionIcon className="h-10 w-10 text-blue-500" />
+                </div>
+                <h3 className="text-2xl font-semibold text-gray-800">No solutions yet</h3>
+                <p className="max-w-md text-center text-gray-500">Be the first to submit a solution for this challenge!</p>
+                <Link href={`/challenges/${slug}/solutions/new`}>
+                  <button className="mt-4 transform rounded-md bg-blue-500 px-6 py-2.5 text-white transition-all duration-300 hover:scale-105 hover:bg-blue-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    Submit Solution
+                  </button>
+                </Link>
               </div>
             )
           ) : (

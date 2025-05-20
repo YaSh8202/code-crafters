@@ -10,6 +10,7 @@ import {
   MaterialSymbolsFilterAltOutline,
   MaterialSymbolsSort,
   TickOutline,
+  ChallengeIcon,
 } from "~/components/Icones";
 import {
   type Dispatch,
@@ -121,15 +122,36 @@ const ChallengesPage: NextPage = () => {
           </div>
         </div>
       </PageHeader>
-      <main className=" mx-auto mt-4 max-w-7xl  ">
-        <div
-          data-test-id="challengesContainer"
-          className="grid w-full grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-8"
-        >
-          {filteredChallenges?.map((challenge) => (
-            <ChallengeCard key={challenge.id} challenge={challenge} />
-          ))}
-        </div>
+      <main className="mx-auto mt-4 max-w-7xl">
+        {filteredChallenges && filteredChallenges.length > 0 ? (
+          <div
+            data-test-id="challengesContainer"
+            className="grid w-full grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-8"
+          >
+            {filteredChallenges.map((challenge) => (
+              <ChallengeCard key={challenge.id} challenge={challenge} />
+            ))}
+          </div>
+        ) : (
+          <div className="flex w-full flex-col items-center justify-center gap-4 rounded-lg border border-gray-200 bg-white p-8 shadow-md transition-all duration-300 hover:shadow-lg">
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-100">
+              <ChallengeIcon className="h-10 w-10 text-blue-500" />
+            </div>
+            <h3 className="text-2xl font-semibold text-gray-800">No challenges found</h3>
+            <p className="max-w-md text-center text-gray-500">
+              We couldn't find any challenges matching your current filters. Try adjusting your filter criteria.
+            </p>
+            <button 
+              onClick={() => {
+                setSelectedChallengeTypes([]);
+                setSelectedDifficulty([]);
+              }}
+              className="mt-4 transform rounded-md bg-blue-500 px-6 py-2.5 text-white transition-all duration-300 hover:scale-105 hover:bg-blue-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              Clear Filters
+            </button>
+          </div>
+        )}
       </main>
     </>
   );

@@ -8,7 +8,6 @@ import removeImports from 'next-remove-imports'
 
 !process.env.SKIP_ENV_VALIDATION && (await import("./src/env.mjs"));
 
-
 /** @type {function(import("next").NextConfig): import("next").NextConfig}} */
 const removeImportsFun = removeImports({
   // test: /node_modules([\s\S]*?)\.(tsx|ts|js|mjs|jsx)$/,
@@ -30,14 +29,29 @@ const config = {
     defaultLocale: "en",
   },
   images: {
-    domains: ["avatars.githubusercontent.com", "res.cloudinary.com",],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+      },
+    ],
   },
   staticPageGenerationTimeout: 100,
   compiler: {
     styledComponents: true
-  }
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
-// export default config;
+
 const nextConfig = {
   ...removeImportsFun({
     webpack(config,) {

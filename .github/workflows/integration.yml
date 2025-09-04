@@ -7,7 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
       - name: Install pnpm
         run: npm install -g pnpm
       - name: Make envfile
@@ -34,7 +39,7 @@ jobs:
           wait-on: "http://localhost:3000"
       - name: Cypress Artifact
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Cypress Videos
           path: /home/runner/work/code-crafters/code-crafters/cypress/videos/

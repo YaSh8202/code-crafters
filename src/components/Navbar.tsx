@@ -3,18 +3,22 @@ import Image from "next/image";
 import Link from "next/link";
 import { MdiGithub } from "./Icones";
 import Menu from "~/components/Menu";
+import ThemeToggle from "~/components/ThemeToggle";
 
 function Navbar() {
   const { data: session, status } = useSession();
   return (
-    <div className="navbar mx-auto w-[min(100%-2rem,1400px)] px-0">
+    <div className="navbar mx-auto w-[min(100%-2rem,1400px)] bg-cc-nav-bg px-0">
       <div className="flex-1">
         <Link href="/" className="btn-ghost btn text-xl normal-case">
           Code Crafters
         </Link>
       </div>
       <div className="flex-none">
-        <ul className="menu menu-horizontal px-1">
+        <ul className="menu menu-horizontal items-center px-1">
+          <li>
+            <ThemeToggle />
+          </li>
           <li className="hidden md:block">
             <Link href="/challenges" className="font-medium">
               Challenges

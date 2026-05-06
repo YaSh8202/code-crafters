@@ -2,9 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base{
-  body{
-    @apply overflow-x-hidden;
+@layer base {
+  body {
+    @apply overflow-x-hidden bg-cc-bg text-cc-text transition-colors duration-200;
   }
 }
 
@@ -15,16 +15,91 @@
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
+/* ─── Custom theme color variables ─────────────────────────────────────────── */
+
+:root,
+[data-theme="light"] {
+  /* Backgrounds */
+  --cc-bg: #f9fafb;
+  --cc-bg-secondary: #ffffff;
+  --cc-bg-tertiary: #f3f4f6;
+
+  /* Surfaces / cards */
+  --cc-surface: #ffffff;
+  --cc-surface-hover: #f3f4f6;
+
+  /* Borders */
+  --cc-border: #e5e7eb;
+
+  /* Text */
+  --cc-text: #111827;
+  --cc-text-secondary: #4b5563;
+  --cc-text-muted: #9ca3af;
+
+  /* Brand / accent */
+  --cc-accent: #6366f1;
+  --cc-accent-hover: #4f46e5;
+  --cc-accent-subtle: #eef2ff;
+
+  /* Status */
+  --cc-success: #10b981;
+  --cc-danger: #ef4444;
+
+  /* Nav / sidebar */
+  --cc-nav-bg: #ffffff;
+  --cc-sidebar-bg: #f3f4f6;
+  --cc-hamburger: #1f2937;
+
+  /* Misc */
+  --navy-shadow: rgba(2, 12, 27, 0.15);
+}
+
+[data-theme="dark"] {
+  /* Backgrounds */
+  --cc-bg: #0f172a;
+  --cc-bg-secondary: #1e293b;
+  --cc-bg-tertiary: #1e293b;
+
+  /* Surfaces / cards */
+  --cc-surface: #1e293b;
+  --cc-surface-hover: #334155;
+
+  /* Borders */
+  --cc-border: #334155;
+
+  /* Text */
+  --cc-text: #f1f5f9;
+  --cc-text-secondary: #94a3b8;
+  --cc-text-muted: #64748b;
+
+  /* Brand / accent */
+  --cc-accent: #818cf8;
+  --cc-accent-hover: #6366f1;
+  --cc-accent-subtle: #1e1b4b;
+
+  /* Status */
+  --cc-success: #34d399;
+  --cc-danger: #f87171;
+
+  /* Nav / sidebar */
+  --cc-nav-bg: #1e293b;
+  --cc-sidebar-bg: #1e293b;
+  --cc-hamburger: #f1f5f9;
+
+  /* Misc */
+  --navy-shadow: rgba(0, 0, 0, 0.5);
+}
+
+/* ─── Legacy palette (kept for existing usages) ─────────────────────────────── */
 :root {
   --dark-navy: #020c1b;
   --navy: #0a192f;
   --light-navy: #112240;
   --lightest-navy: #233554;
-  --navy-shadow: rgba(2, 12, 27, 0.7);
   --dark-slate: #495670;
   --slate: #8892b0;
   --light-slate: #a8b2d1;
@@ -35,8 +110,7 @@
   --pink: #f57dff;
   --blue: #57cbff;
 
-  --font-sans: 'Calibre', 'Inter', 'San Francisco', 'SF Pro Text', -apple-system, system-ui,
-    sans-serif;
+  --font-sans: 'Calibre', 'Inter', 'San Francisco', 'SF Pro Text', -apple-system, system-ui, sans-serif;
   --font-mono: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
 
   --fz-xxs: 12px;
@@ -63,15 +137,5 @@
   --ham-before: top 0.1s ease-in 0.25s, opacity 0.1s ease-in;
   --ham-before-active: top 0.1s ease-out, opacity 0.1s ease-out 0.12s;
   --ham-after: bottom 0.1s ease-in 0.25s, transform 0.22s cubic-bezier(0.55, 0.055, 0.675, 0.19);
-  --ham-after-active: bottom 0.1s ease-out,
-    transform 0.22s cubic-bezier(0.215, 0.61, 0.355, 1) 0.12s;
+  --ham-after-active: bottom 0.1s ease-out, transform 0.22s cubic-bezier(0.215, 0.61, 0.355, 1) 0.12s;
 }
-
-
-/* Nav menu styling */
-
-
-
-/* .two:hover span {
-  width: 50%;
-} */

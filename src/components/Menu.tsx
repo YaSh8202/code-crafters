@@ -4,7 +4,8 @@ import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useOnClickOutside } from "usehooks-ts";
-import {  MdiGithub } from "~/components/Icones";
+import { MdiGithub } from "~/components/Icones";
+import ThemeToggle from "~/components/ThemeToggle";
 
 export const KEY_CODES = {
   ARROW_LEFT: "ArrowLeft",
@@ -80,7 +81,7 @@ const StyledHamburgerButton = styled.button<HamburgerButtonProps>`
     width: var(--hamburger-width);
     height: 2px;
     border-radius: 4px;
-    background-color: #1f2937;
+    background-color: var(--cc-hamburger);
     transition-duration: 0.22s;
     transition-property: transform;
     transition-delay: ${(props) => (props.menuopen ? `0.12s` : `0s`)};
@@ -99,7 +100,7 @@ const StyledHamburgerButton = styled.button<HamburgerButtonProps>`
       width: var(--hamburger-width);
       height: 2px;
       border-radius: 4px;
-      background-color: #1f2937;
+      background-color: var(--cc-hamburger);
       transition-timing-function: ease;
       transition-duration: 0.15s;
       transition-property: transform;
@@ -140,7 +141,7 @@ const StyledSidebar = styled.aside<SidebarProps>`
     width: min(75vw, 400px);
     height: 100vh;
     outline: 0;
-    background-color: #f3f4f6;
+    background-color: var(--cc-sidebar-bg);
     box-shadow: -10px 0px 30px -15px var(--navy-shadow);
     z-index: 9;
     transform: translateX(${(props) => (props.menuopen ? 0 : 100)}vw);
@@ -154,7 +155,7 @@ const StyledSidebar = styled.aside<SidebarProps>`
     align-items: center;
     width: 100%;
     flex-direction: column;
-    color: black;
+    color: var(--cc-text);
     font-family: var(--font-mono);
     text-align: center;
   }
